@@ -1,16 +1,16 @@
 use creusot_contracts::{ghost::PtrOwn, logic::Mapping, prelude::*};
 
-struct Cell<T> {
+struct ListCell<T> {
     v: T,
-    next: *const Cell<T>,
+    next: *const ListCell<T>,
 }
 
 pub struct List<T> {
     // actual data
-    first: *const Cell<T>,
-    last: *const Cell<T>,
+    first: *const ListCell<T>,
+    last: *const ListCell<T>,
     // ghost
-    seq: Ghost<Seq<PtrOwn<Cell<T>>>>,
+    seq: Ghost<Seq<PtrOwn<ListCell<T>>>>,
 }
 
 impl<T> Invariant for List<T> {
@@ -40,7 +40,7 @@ impl<T> View for List<T> {
     fn view(self) -> Self::ViewTy {
         pearlite! {
             // TODO
-            seq_map(*self.seq, |ptr_own: PtrOwn<Cell<T>>| ptr_own.val().v)
+            seq_map(*self.seq, |ptr_own: PtrOwn<ListCell<T>>| ptr_own.val().v)
         }
     }
 }
@@ -58,7 +58,7 @@ impl<T> List<T> {
 
     // #[ensures((^self)@ == (*self)@.push_back(x))]
     pub fn push_back(&mut self, x: T) {
-        let cell = Box::new(Cell { v: x, next: std::ptr::null() });
+        let cell = Box::new(ListCell { v: x, next: std::ptr::null() });
         // TODO
         let (cell_ptr, cell_own) = PtrOwn::from_box(cell);
         if self.last.is_null() {
@@ -67,7 +67,7 @@ impl<T> List<T> {
         } else {
             let cell_last = unsafe {
                 PtrOwn::as_mut(
-                    self.last as *mut Cell<T>,
+                    self.last as *mut ListCell<T>,
                     todo!(),
                     // ghost! {
                     //     let off = self.seq.len_ghost() - 1int;
@@ -84,7 +84,7 @@ impl<T> List<T> {
     // #[ensures((^self)@ == (*self)@.push_front(x))]
     pub fn push_front(&mut self, x: T) {
         // TODO
-        let (cell_ptr, cell_own) = PtrOwn::new(Cell { v: x, next: self.first });
+        let (cell_ptr, cell_own) = PtrOwn::new(ListCell { v: x, next: self.first });
         self.first = cell_ptr;
         if self.last.is_null() {
             self.last = cell_ptr;
