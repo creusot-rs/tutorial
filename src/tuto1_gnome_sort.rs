@@ -1,31 +1,29 @@
-use creusot_contracts::{
-    logic::{Int, OrdLogic, Seq},
-    prelude::*,
-};
+//! # Exercise 1: verify `gnome_sort`
+//!
+//! ## Part A
+//!
+//! Formalize and prove the following specification:
+//!
+//! - The final value of `v` (`^v`) contains elements in increasing order.
+//! - The final value of `v` is a permutation of the initial value (`*v`).
+//!
+//! ## Part B
+//!
+//! Generalize `gnome_sort` to sort slices of any ordered type.
+//!
+//! ```
+//! pub fn gnome_sort<T>(v: &mut T) where
+//!     T: Ord + DeepModel,
+//!     T::DeepModelTy: OrdLogic,
+//! ```
+use creusot_contracts::prelude::*;
 
-#[logic(open)]
-pub fn sorted_range<T: OrdLogic>(s: Seq<T>, l: Int, u: Int) -> bool {
-    pearlite! {
-        forall<i, j> l <= i && i < j && j < u ==> s[i] <= s[j]
-    }
-}
-
-#[logic(open)]
-pub fn sorted<T: OrdLogic>(s: Seq<T>) -> bool {
-    sorted_range(s, 0, s.len())
-}
-
-// #[ensures(sorted((^v).deep_model()))]
-// #[ensures((^v)@.permutation_of(v@))]
-pub fn gnome_sort<T: Ord + DeepModel>(v: &mut Vec<T>)
-where
-    T::DeepModelTy: OrdLogic,
-{
-    let old_v = snapshot! { v };
+#[trusted] // TODO: Remove this
+// #[ensures(TODO)]
+pub fn gnome_sort(v: &mut [usize]) {
+    let _old_v: Snapshot<&mut [usize]> = snapshot! { v };
     let mut i = 0;
-    // #[invariant(sorted_range(v.deep_model(), 0, i@))]
-    // #[invariant(v@.permutation_of(old_v@))]
-    // #[invariant(inv(v))]
+    // #[invariant(TODO)]
     while i < v.len() {
         if i == 0 || v[i - 1] <= v[i] {
             i += 1;
@@ -35,3 +33,21 @@ where
         }
     }
 }
+
+// Unit tests
+
+#[test]
+fn test_1() {
+    let mut v = [4, 2, 1, 3];
+    gnome_sort(&mut v);
+    assert_eq!(v, [1, 2, 3, 4]);
+}
+
+/* TODO: Uncomment this after generalizing gnome_sort
+#[test]
+fn test_2() {
+    let mut v = [(4, 4), (2, 2), (1, 1), (3, 3)];
+    gnome_sort(&mut v);
+    assert_eq!(v, [(1, 1), (2, 2), (3, 3), (4, 4)]);
+}
+*/
