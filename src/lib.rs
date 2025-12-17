@@ -1,5 +1,5 @@
-pub mod tuto1_gnome_sort;
-pub mod tuto2_linked_list;
+pub mod ex1_gnome_sort;
+pub mod ex2_linked_list;
 
 use creusot_contracts::prelude::*;
 
