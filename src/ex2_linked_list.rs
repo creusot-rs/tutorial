@@ -1,4 +1,6 @@
-use creusot_contracts::{ghost::PtrOwn, logic::Mapping, prelude::*};
+#![allow(unused)] // TODO: remove this
+
+use creusot_contracts::{ghost::perm::Perm, logic::Mapping, prelude::*};
 
 struct ListCell<T> {
     v: T,
@@ -10,11 +12,11 @@ pub struct List<T> {
     first: *const ListCell<T>,
     last: *const ListCell<T>,
     // ghost
-    // seq: Ghost<Seq<PtrOwn<ListCell<T>>>>,
+    // seq: Ghost<Seq<Box<Perm<*const ListCell<T>>>>>,
 }
 
 // impl<T> Invariant for List<T> {
-//     #[logic]
+//     #[logic(inline)]
 //     fn invariant(self) -> bool {
 //         pearlite! {
 //             (*self.seq == Seq::empty() &&
@@ -22,11 +24,11 @@ pub struct List<T> {
 //              self.last.is_null_logic())
 //             ||
 //             (self.seq.len() > 0 &&
-//              self.first == self.seq[0].ptr() &&
-//              self.last  == self.seq[self.seq.len() - 1].ptr() &&
+//              self.first == *self.seq[0].ward() &&
+//              self.last  == *self.seq[self.seq.len() - 1].ward() &&
 //              // the cells in `seq` are chained properly
 //              (forall<i> 0 <= i && i < self.seq.len() - 1 ==>
-//                  self.seq[i].val().next == self.seq[i+1].ptr()) &&
+//                  self.seq[i].val().next == *self.seq[i+1].ward()) &&
 //              self.seq[self.seq.len() - 1].val().next.is_null_logic())
 //         }
 //     }
@@ -38,8 +40,7 @@ pub struct List<T> {
 //     #[logic]
 //     fn view(self) -> Self::ViewTy {
 //         pearlite! {
-//             // TODO
-//             seq_map(*self.seq, |ptr_own: PtrOwn<ListCell<T>>| ptr_own.val().v)
+//             seq_map(*self.seq, |ptr_perm: Box<Perm<*const ListCell<T>>>| ptr_perm.val().v)
 //         }
 //     }
 // }
@@ -67,14 +68,14 @@ impl<T> List<T> {
             next: std::ptr::null_mut(),
         });
         let cell_ptr = Box::into_raw(cell);
-        // let (cell_ptr, cell_own) = PtrOwn::from_box(cell);
+        // let (cell_ptr, cell_perm) = Perm::from_box(cell);
         if self.last.is_null() {
             self.first = cell_ptr;
             self.last = cell_ptr;
         } else {
             let cell_last = unsafe {
                 &mut *(self.last as *mut ListCell<T>)
-                // PtrOwn::as_mut(
+                // Perm::as_mut(
                 //     self.last as *mut ListCell<T>,
                 //     ghost! {
                 //         let off = self.seq.len_ghost() - 1int;
@@ -85,7 +86,7 @@ impl<T> List<T> {
             cell_last.next = cell_ptr;
             self.last = cell_ptr;
         }
-        // ghost! { self.seq.push_back_ghost(cell_own.into_inner()) };
+        // ghost! { self.seq.push_back_ghost(cell_perm.into_inner()) };
     }
 
     // #[ensures((^self)@ == (*self)@.push_front(x))]
@@ -95,12 +96,12 @@ impl<T> List<T> {
             next: self.first,
         });
         let cell_ptr = Box::into_raw(cell);
-        // let (cell_ptr, cell_own) = PtrOwn::new(cell);
+        // let (cell_ptr, cell_perm) = Perm::new(cell);
         self.first = cell_ptr;
         if self.last.is_null() {
             self.last = cell_ptr;
         }
-        // ghost! { self.seq.push_front_ghost(cell_own.into_inner()) };
+        // ghost! { self.seq.push_front_ghost(cell_perm.into_inner()) };
     }
 
     // #[ensures(match result {
@@ -112,8 +113,8 @@ impl<T> List<T> {
             return None;
         }
         let cell = *unsafe { Box::from_raw(self.first as *mut ListCell<T>) };
-        // let own = ghost! { self.seq.pop_front_ghost().unwrap() };
-        // let cell = unsafe { *PtrOwn::to_box(self.first as *mut ListCell<T>, own) };
+        // let perm = ghost! { self.seq.pop_front_ghost().unwrap() };
+        // let cell = unsafe { *Perm::to_box(self.first as *mut ListCell<T>, perm) };
         self.first = cell.next;
         if self.first.is_null() {
             self.last = std::ptr::null_mut();
