@@ -1,6 +1,12 @@
 pub mod ex1_gnome_sort;
 pub mod ex2_linked_list;
 
+#[cfg(feature = "solutions")]
+pub mod solutions {
+    pub mod ex1_gnome_sort;
+    pub mod ex2_linked_list;
+}
+
 use creusot_contracts::prelude::*;
 
 #[requires(a@ < i64::MAX@)]

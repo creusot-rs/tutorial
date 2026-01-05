@@ -11,8 +11,6 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 [[package]]
 name = "creusot-contracts"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11db9331abd9b2aee1c42e5739a669f9cce791e1704f24c9decc7f563fb3f4b4"
 dependencies = [
  "creusot-contracts-proc",
  "num-rational",
@@ -21,8 +19,6 @@ dependencies = [
 [[package]]
 name = "creusot-contracts-proc"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d547dbd8c3f26857d966cd487462afae75c890e46072a255268411191e107a9b"
 dependencies = [
  "proc-macro2",
  "quote",
