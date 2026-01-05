@@ -17,7 +17,7 @@ pub fn sorted<T: OrdLogic>(s: Seq<T>) -> bool {
 
 #[ensures(sorted((^v).deep_model()))]
 #[ensures((^v)@.permutation_of(v@))]
-pub fn gnome_sort<T: Ord + DeepModel>(v: &mut Vec<T>)
+pub fn gnome_sort<T: Ord + DeepModel>(v: &mut [T])
 where
     T::DeepModelTy: OrdLogic,
 {
@@ -33,4 +33,18 @@ where
             i -= 1;
         }
     }
+}
+
+#[test]
+fn test_1() {
+    let mut v = [4, 2, 1, 3];
+    gnome_sort(&mut v);
+    assert_eq!(v, [1, 2, 3, 4]);
+}
+
+#[test]
+fn test_2() {
+    let mut v = [(4, 4), (2, 2), (1, 1), (3, 3)];
+    gnome_sort(&mut v);
+    assert_eq!(v, [(1, 1), (2, 2), (3, 3), (4, 4)]);
 }

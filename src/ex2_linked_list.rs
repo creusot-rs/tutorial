@@ -122,3 +122,16 @@ impl<T> List<T> {
         Some(cell.v)
     }
 }
+
+#[test]
+fn test_1() {
+    const LIST: [usize; 3] = [1, 2, 3];
+    let mut x = List::new();
+    for i in LIST {
+        x.push_back(i);
+    }
+    for i in LIST {
+        assert_eq!(x.pop_front(), Some(i));
+    }
+    assert_eq!(x.pop_front(), None)
+}
