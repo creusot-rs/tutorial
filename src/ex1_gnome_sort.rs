@@ -10,12 +10,7 @@
 //! ## Part B
 //!
 //! Generalize `gnome_sort` to sort slices of any ordered type.
-//!
-//! ```ignore
-//! pub fn gnome_sort<T>(v: &mut T) where
-//!     T: Ord + DeepModel,
-//!     T::DeepModelTy: OrdLogic,
-//! ```
+
 use creusot_contracts::prelude::*;
 
 #[trusted] // TODO: Remove this

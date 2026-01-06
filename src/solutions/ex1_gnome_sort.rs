@@ -1,7 +1,4 @@
-use creusot_contracts::{
-    logic::{Int, OrdLogic, Seq},
-    prelude::*,
-};
+use creusot_contracts::{logic::OrdLogic, prelude::*};
 
 #[logic(open)]
 pub fn sorted_range<T: OrdLogic>(s: Seq<T>, l: Int, u: Int) -> bool {
@@ -21,10 +18,10 @@ pub fn gnome_sort<T: Ord + DeepModel>(v: &mut [T])
 where
     T::DeepModelTy: OrdLogic,
 {
-    let old_v = snapshot! { v };
+    let _old_v = snapshot! { v };
     let mut i = 0;
     #[invariant(sorted_range(v.deep_model(), 0, i@))]
-    #[invariant(v@.permutation_of(old_v@))]
+    #[invariant(v@.permutation_of(_old_v@))]
     while i < v.len() {
         if i == 0 || v[i - 1] <= v[i] {
             i += 1;

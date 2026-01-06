@@ -1,125 +1,89 @@
+//! A linked list with methods `push_back`, `pop_front`, `push_front`.
+//!
+//! This implementation uses unsafe pointer operations,
+//! and we will use Creusot to verify their safety conditions
+//! thanks to ghost pointer permissions.
+//!
+//! ## Tutorial summary
+//!
+//! 1. Add a field to `List<T>` containing the pointer permissions.
+//! 2. Add a type invariant (`impl Invariant for List<T>`).
+//! 3. Add a view (`impl View for List<T>`).
+//! 4. Verify `new`, `push_back`, `pop_front`, `push_front`.
+
 #![allow(unused)] // TODO: remove this
 
-use creusot_contracts::{ghost::perm::Perm, logic::Mapping, prelude::*};
+use creusot_contracts::{ghost::perm::Perm, prelude::*};
 
-struct ListCell<T> {
-    v: T,
-    next: *const ListCell<T>,
+struct Link<T> {
+    value: T,
+    next: *const Link<T>,
 }
 
 pub struct List<T> {
-    // actual data
-    first: *const ListCell<T>,
-    last: *const ListCell<T>,
-    // ghost
-    // seq: Ghost<Seq<Box<Perm<*const ListCell<T>>>>>,
+    first: *const Link<T>,
+    last: *const Link<T>,
 }
 
-// impl<T> Invariant for List<T> {
-//     #[logic(inline)]
-//     fn invariant(self) -> bool {
-//         pearlite! {
-//             (*self.seq == Seq::empty() &&
-//              self.first.is_null_logic() &&
-//              self.last.is_null_logic())
-//             ||
-//             (self.seq.len() > 0 &&
-//              self.first == *self.seq[0].ward() &&
-//              self.last  == *self.seq[self.seq.len() - 1].ward() &&
-//              // the cells in `seq` are chained properly
-//              (forall<i> 0 <= i && i < self.seq.len() - 1 ==>
-//                  self.seq[i].val().next == *self.seq[i+1].ward()) &&
-//              self.seq[self.seq.len() - 1].val().next.is_null_logic())
-//         }
-//     }
-// }
-
-// impl<T> View for List<T> {
-//     type ViewTy = Seq<T>;
-
-//     #[logic]
-//     fn view(self) -> Self::ViewTy {
-//         pearlite! {
-//             seq_map(*self.seq, |ptr_perm: Box<Perm<*const ListCell<T>>>| ptr_perm.val().v)
-//         }
-//     }
-// }
-
-// #[logic]
-// pub fn seq_map<T, U>(s: Seq<T>, f: Mapping<T, U>) -> Seq<U> {
-//     Seq::create(s.len(), |i| f.get(s[i]))
-// }
-
 impl<T> List<T> {
-    // #[ensures(result@ == Seq::empty())]
+    /// Create an empty list.
+    #[trusted] // TODO: Remove this
     pub fn new() -> List<T> {
         List {
             first: std::ptr::null_mut(),
             last: std::ptr::null_mut(),
-            // seq: Seq::new(),
         }
     }
 
-    #[trusted] // Remove this after replacing &mut *self.last
-    // #[ensures((^self)@ == (*self)@.push_back(x))]
-    pub fn push_back(&mut self, x: T) {
-        let cell = Box::new(ListCell {
-            v: x,
+    /// Push an element to the back of the list.
+    #[trusted] // TODO: Remove this after rewriting away `&mut *self.last`
+    pub fn push_back(&mut self, value: T) {
+        // Allocate a new `Link`
+        let link = Box::new(Link {
+            value,
             next: std::ptr::null_mut(),
         });
-        let cell_ptr = Box::into_raw(cell);
-        // let (cell_ptr, cell_perm) = Perm::from_box(cell);
+        // Cast the `Box` into a raw pointer
+        let link_ptr = Box::into_raw(link);
         if self.last.is_null() {
-            self.first = cell_ptr;
-            self.last = cell_ptr;
+            self.first = link_ptr;
+            self.last = link_ptr;
         } else {
-            let cell_last = unsafe {
-                &mut *(self.last as *mut ListCell<T>)
-                // Perm::as_mut(
-                //     self.last as *mut ListCell<T>,
-                //     ghost! {
-                //         let off = self.seq.len_ghost() - 1int;
-                //         self.seq.get_mut_ghost(off).unwrap()
-                //     },
-                // )
-            };
-            cell_last.next = cell_ptr;
-            self.last = cell_ptr;
+            // Modify the `next` field of the `last` link to point to the newly allocated `Link`
+            let link_last = unsafe { &mut *(self.last as *mut Link<T>) };
+            link_last.next = link_ptr;
+            self.last = link_ptr;
         }
-        // ghost! { self.seq.push_back_ghost(cell_perm.into_inner()) };
     }
 
-    // #[ensures((^self)@ == (*self)@.push_front(x))]
-    pub fn push_front(&mut self, x: T) {
-        let cell = Box::new(ListCell {
-            v: x,
-            next: self.first,
-        });
-        let cell_ptr = Box::into_raw(cell);
-        // let (cell_ptr, cell_perm) = Perm::new(cell);
-        self.first = cell_ptr;
-        if self.last.is_null() {
-            self.last = cell_ptr;
-        }
-        // ghost! { self.seq.push_front_ghost(cell_perm.into_inner()) };
-    }
-
-    // #[ensures(match result {
-    //     None => (*self)@ == Seq::empty() && (^self)@ == Seq::empty(),
-    //     Some(x) => (*self)@.len() > 0 && x == (*self)@[0] && (^self)@ == (*self)@.pop_front()
-    // })]
+    /// Pop an element from the front of the list.
+    #[trusted] // TODO: Remove this
     pub fn pop_front(&mut self) -> Option<T> {
         if self.first.is_null() {
             return None;
         }
-        let cell = *unsafe { Box::from_raw(self.first as *mut ListCell<T>) };
-        // let perm = ghost! { self.seq.pop_front_ghost().unwrap() };
-        // let cell = unsafe { *Perm::to_box(self.first as *mut ListCell<T>, perm) };
-        self.first = cell.next;
+        // Cast the `self.first` pointer to a `Box` and take out its contents.
+        // The `Box` is deallocated implicitly.
+        let link = *unsafe { Box::from_raw(self.first as *mut Link<T>) };
+        self.first = link.next;
         if self.first.is_null() {
             self.last = std::ptr::null_mut();
         }
-        Some(cell.v)
+        Some(link.value)
+    }
+
+    /// Push an element to the front of the list.
+    #[trusted] // TODO: Remove this
+    pub fn push_front(&mut self, value: T) {
+        let link = Box::new(Link {
+            value,
+            next: self.first,
+        });
+        let link_ptr = Box::into_raw(link);
+        self.first = link_ptr;
+        if self.last.is_null() {
+            self.last = link_ptr;
+        }
     }
 }
 

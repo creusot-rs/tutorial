@@ -1,16 +1,16 @@
-use creusot_contracts::{ghost::perm::Perm, logic::Mapping, prelude::*};
+use creusot_contracts::{ghost::perm::Perm, prelude::*};
 
-struct ListCell<T> {
-    v: T,
-    next: *const ListCell<T>,
+struct Link<T> {
+    value: T,
+    next: *const Link<T>,
 }
 
 pub struct List<T> {
     // actual data
-    first: *const ListCell<T>,
-    last: *const ListCell<T>,
+    first: *const Link<T>,
+    last: *const Link<T>,
     // ghost
-    seq: Ghost<Seq<Box<Perm<*const ListCell<T>>>>>,
+    seq: Ghost<Seq<Box<Perm<*const Link<T>>>>>,
 }
 
 impl<T> Invariant for List<T> {
@@ -38,14 +38,9 @@ impl<T> View for List<T> {
     #[logic]
     fn view(self) -> Self::ViewTy {
         pearlite! {
-            seq_map(*self.seq, |ptr_perm: Box<Perm<*const ListCell<T>>>| ptr_perm.val().v)
+            (*self.seq).map(|ptr_perm: Box<Perm<*const Link<T>>>| ptr_perm.val().value)
         }
     }
-}
-
-#[logic]
-pub fn seq_map<T, U>(s: Seq<T>, f: Mapping<T, U>) -> Seq<U> {
-    Seq::create(s.len(), |i| f.get(s[i]))
 }
 
 impl<T> List<T> {
@@ -58,20 +53,20 @@ impl<T> List<T> {
         }
     }
 
-    #[ensures((^self)@ == (*self)@.push_back(x))]
-    pub fn push_back(&mut self, x: T) {
-        let cell = Box::new(ListCell {
-            v: x,
+    #[ensures((^self)@ == (*self)@.push_back(value))]
+    pub fn push_back(&mut self, value: T) {
+        let link = Box::new(Link {
+            value,
             next: std::ptr::null(),
         });
-        let (cell_ptr, cell_perm) = Perm::from_box(cell);
+        let (cell_ptr, cell_perm) = Perm::from_box(link);
         if self.last.is_null() {
             self.first = cell_ptr;
             self.last = cell_ptr;
         } else {
             let cell_last = unsafe {
                 Perm::as_mut(
-                    self.last as *mut ListCell<T>,
+                    self.last as *mut Link<T>,
                     ghost! {
                         let off = self.seq.len_ghost() - 1int;
                         self.seq.get_mut_ghost(off).unwrap()
@@ -84,19 +79,6 @@ impl<T> List<T> {
         ghost! { self.seq.push_back_ghost(cell_perm.into_inner()) };
     }
 
-    #[ensures((^self)@ == (*self)@.push_front(x))]
-    pub fn push_front(&mut self, x: T) {
-        let (cell_ptr, cell_perm) = Perm::new(ListCell {
-            v: x,
-            next: self.first,
-        });
-        self.first = cell_ptr;
-        if self.last.is_null() {
-            self.last = cell_ptr;
-        }
-        ghost! { self.seq.push_front_ghost(cell_perm.into_inner()) };
-    }
-
     #[ensures(match result {
         None => (*self)@ == Seq::empty() && (^self)@ == Seq::empty(),
         Some(x) => (*self)@.len() > 0 && x == (*self)@[0] && (^self)@ == (*self)@.pop_front()
@@ -106,12 +88,25 @@ impl<T> List<T> {
             return None;
         }
         let own = ghost! { self.seq.pop_front_ghost().unwrap() };
-        let cell = unsafe { *Perm::to_box(self.first as *mut ListCell<T>, own) };
-        self.first = cell.next;
+        let link = unsafe { *Perm::to_box(self.first as *mut Link<T>, own) };
+        self.first = link.next;
         if self.first.is_null() {
             self.last = std::ptr::null_mut();
         }
-        Some(cell.v)
+        Some(link.value)
+    }
+
+    #[ensures((^self)@ == (*self)@.push_front(value))]
+    pub fn push_front(&mut self, value: T) {
+        let (cell_ptr, cell_perm) = Perm::new(Link {
+            value,
+            next: self.first,
+        });
+        self.first = cell_ptr;
+        if self.last.is_null() {
+            self.last = cell_ptr;
+        }
+        ghost! { self.seq.push_front_ghost(cell_perm.into_inner()) };
     }
 }
 
