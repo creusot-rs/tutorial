@@ -12,6 +12,9 @@
 //! 2. Add a type invariant (`impl Invariant for List<T>`).
 //! 3. Add a view (`impl View for List<T>`).
 //! 4. Verify `new`, `push_back`, `pop_front`, `push_front`.
+//!     - Write contracts.
+//!     - Replace pointer operations with ones that manipulate permissions.
+//!     - Update the new permissions field to maintain the type invariant.
 
 #![allow(unused)] // TODO: remove this
 
