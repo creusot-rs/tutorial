@@ -1,3 +1,5 @@
+//! # Exercise 2: Linked list
+//!
 //! A linked list with methods `push_back`, `pop_front`, `push_front`.
 //!
 //! This implementation uses unsafe pointer operations,

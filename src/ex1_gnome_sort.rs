@@ -1,22 +1,22 @@
-//! # Exercise 1: verify `gnome_sort`
+//! # Exercise 1: Gnome sort
 //!
-//! ## Part A
+//! A sorting function with the simplicity of a single loop.
 //!
-//! Formalize and prove the following specification:
+//! ## Tutorial summary
 //!
-//! - The final value of `v` (`^v`) contains elements in increasing order.
-//! - The final value of `v` is a permutation of the initial value (`*v`).
+//! 1. Formalize and prove the following specification:
 //!
-//! ## Part B
+//!     - The final value of `v` (`^v`) contains elements in increasing order.
+//!     - The final value of `v` is a permutation of the initial value (`*v`).
 //!
-//! Generalize `gnome_sort` to sort slices of any ordered type.
+//! 2. Generalize `gnome_sort` to sort slices of any ordered type.
+
+#![allow(unused)] // TODO: Remove this
 
 use creusot_contracts::prelude::*;
 
-#[trusted] // TODO: Remove this
 // #[ensures(TODO)]
 pub fn gnome_sort(v: &mut [usize]) {
-    let _old_v: Snapshot<&mut [usize]> = snapshot! { v };
     let mut i = 0;
     // #[invariant(TODO)]
     while i < v.len() {
