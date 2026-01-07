@@ -4,7 +4,7 @@
   "depth": 4,
   "packages": [ "creusot" ],
   "provers": [ "alt-ergo", "z3", "cvc4", "cvc5" ],
-  "tactics": [ "split_vc" ],
+  "tactics": [ "compute_specified", "split_vc" ],
   "drivers": [],
   "warnoff": [ "unused_variable", "axiom_abstract" ],
   "profile": [
