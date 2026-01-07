@@ -11,7 +11,6 @@ pub fn add_one(a: i64) -> i64 {
     a + 1
 }
 
-
 pub mod ex1_gnome_sort;
 pub mod ex2_linked_list;
 

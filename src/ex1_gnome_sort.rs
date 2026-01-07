@@ -17,14 +17,14 @@ use creusot_contracts::prelude::*;
 
 // #[ensures(TODO)]
 pub fn gnome_sort(v: &mut [usize]) {
-    let mut i = 0;
+    let mut n = 0;
     // #[invariant(TODO)]
-    while i < v.len() {
-        if i == 0 || v[i - 1] <= v[i] {
-            i += 1;
+    while n < v.len() {
+        if n == 0 || v[n - 1] <= v[n] {
+            n += 1;
         } else {
-            v.swap(i - 1, i);
-            i -= 1;
+            v.swap(n - 1, n);
+            n -= 1;
         }
     }
 }
