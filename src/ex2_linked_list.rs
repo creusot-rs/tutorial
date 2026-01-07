@@ -20,11 +20,13 @@
 
 use creusot_contracts::{ghost::perm::Perm, prelude::*};
 
+/// One link in a linked list
 struct Link<T> {
     value: T,
     next: *const Link<T>,
 }
 
+/// Linked lists
 pub struct List<T> {
     first: *const Link<T>,
     last: *const Link<T>,
