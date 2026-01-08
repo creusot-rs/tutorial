@@ -1,0 +1,43 @@
+{
+    "name": "Creusot tutorial",
+    "image": "ghcr.io/creusot-rs/creusot:latest",
+
+    "containerEnv": {
+        "CREUSOT_DATA_HOME": "/"
+    },
+
+    "customizations": {
+        "vscode": {
+            "extensions": [ "/creusot-ide.vsix", "/rust-analyzer.vsix" ],
+            "settings": {
+                "creusot": {
+                    "lspPath": "/bin/creusot-lsp"
+                },
+                "extensions": {
+                    "autoCheckUpdates": false,
+                    "ignoreRecommandations": true,
+                    "showRecommendationsOnlyOnDemand": true
+                },
+
+                "git": {
+                    "ignoreMissingGitWarning": true
+                },
+
+                "json": {
+                    "validate": {
+                        "enable": false
+                    }
+                },
+
+                "rust-analyzer": {
+                    "cargo": {
+                        "sysroot": "/"
+                    },
+                    "server": {
+                        "path": "/bin/rust-analyzer"
+                    }
+                }
+             }
+        }
+    }
+}

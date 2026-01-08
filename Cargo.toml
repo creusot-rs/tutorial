@@ -13,4 +13,4 @@ solutions = []
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(creusot)'] }
 
 [patch.crates-io]
-creusot-contracts = { path = "creusot/creusot-contracts" }
+creusot-contracts = { path = "/share/creusot-contracts" }
