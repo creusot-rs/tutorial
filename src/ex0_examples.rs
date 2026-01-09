@@ -33,6 +33,19 @@ pub fn all_zero(v: &mut [u32]) {
     }
 }
 
+/// Set a slice to zero, using `Iterator::map`.
+#[ensures((^v)@.len() == v@.len())]
+#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
+pub fn all_zero_map(v: &mut [u32]) {
+    // We could use `for_each` instead of `map` in theory,
+    // but it's currently missing a specification in Creusot.
+    v.iter_mut()
+        .map(|x| {
+            *x = 0;
+        })
+        .collect::<()>()
+}
+
 /// Shuffle the elements of a slice
 #[ensures((^slice)@.permutation_of((*slice)@))]
 pub fn shuffle<T>(slice: &mut [T]) {
