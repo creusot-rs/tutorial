@@ -60,6 +60,7 @@ pub fn shuffle<T>(slice: &mut [T]) {
 /// A random number between `0` and `i`.
 #[ensures(0 <= result@ && result@ <= i@)]
 pub fn random(i: usize) -> usize {
+    let _ = i;
     // a random number :)
     0
 }
