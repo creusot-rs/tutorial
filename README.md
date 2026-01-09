@@ -42,11 +42,11 @@ on Github's servers, with a free quota of 120h monthly per user.
     cd tutorial
     ```
 
-3. In the `tutorial` repository, create a file `.cargo/config.toml` with the contents below, replacing the string with the path to `creusot-contracts` within your copy of the `creusot` repository.
+3. In the `tutorial` repository, create a file `.cargo/config.toml` with the contents below, replacing the string with the path to `creusot-std` within your copy of the `creusot` repository.
 
     ```toml
     [patch.crates-io]
-    creusot-contracts = { path = "/MY/PATH/TO/creusot/creusot-contracts" }
+    creusot-std = { path = "/MY/PATH/TO/creusot/creusot-std" }
     ```
 
 ## Usage

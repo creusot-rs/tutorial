@@ -18,7 +18,7 @@
 
 #![allow(unused)] // TODO: remove this
 
-use creusot_contracts::{ghost::perm::Perm, prelude::*};
+use creusot_std::{ghost::perm::Perm, prelude::*};
 
 /// One link in a linked list
 struct Link<T> {

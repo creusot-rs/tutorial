@@ -1,4 +1,4 @@
-use creusot_contracts::{ghost::perm::Perm, prelude::*};
+use creusot_std::{ghost::perm::Perm, prelude::*};
 
 struct Link<T> {
     value: T,

@@ -1,4 +1,4 @@
-use creusot_contracts::{logic::OrdLogic, prelude::*};
+use creusot_std::{logic::OrdLogic, prelude::*};
 
 #[logic(open)]
 pub fn sorted_range<T: OrdLogic>(s: Seq<T>, l: Int, u: Int) -> bool {

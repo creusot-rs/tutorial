@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-creusot-contracts = "0.8.0"
+creusot-std = "0.8.0"
 
 [features]
 solutions = []
@@ -13,4 +13,4 @@ solutions = []
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(creusot)'] }
 
 [patch.crates-io]
-creusot-contracts = { path = "/share/creusot-contracts" }
+creusot-std = { path = "/share/creusot-std" }

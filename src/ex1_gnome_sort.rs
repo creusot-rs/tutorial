@@ -13,7 +13,7 @@
 
 #![allow(unused)] // TODO: Remove this
 
-use creusot_contracts::prelude::*;
+use creusot_std::prelude::*;
 
 // #[ensures(TODO)]
 pub fn gnome_sort(v: &mut [usize]) {

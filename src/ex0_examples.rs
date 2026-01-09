@@ -1,6 +1,6 @@
 //! Examples from the tutorial slides
 
-use creusot_contracts::{ghost::perm::Perm, prelude::*};
+use creusot_std::{ghost::perm::Perm, prelude::*};
 
 /// Sum of integers from 1 to n
 #[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
