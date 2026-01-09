@@ -46,6 +46,54 @@ pub fn all_zero_map(v: &mut [u32]) {
         .collect::<()>()
 }
 
+#[logic(open)]
+#[variant(xs.len())]
+pub fn sum_seq(xs: Seq<u64>) -> Int {
+    pearlite! {
+        if xs.len() == 0 {
+            0
+        } else {
+            sum_seq(xs[0..xs.len() - 1]) + xs[xs.len() - 1]@
+        }
+    }
+}
+
+#[requires(sum_seq(xs@) <= u64::MAX@)]
+#[ensures(result@ == sum_seq(xs@))]
+pub fn sum_slice(xs: &[u64]) -> u64 {
+    let mut sum = 0;
+    sum_slice_lemma(xs);
+    let _ = xs
+        .iter()
+        .map_inv(|x, produced| {
+            proof_assert! { sum@ + x@ == sum_seq(xs@[0..produced.len() + 1]) };
+            sum += *x;
+        })
+        .collect::<()>();
+    sum
+}
+
+#[requires(sum_seq(xs@) <= u64::MAX@)]
+#[ensures(forall<i> 0 <= i && i <= xs@.len() ==> sum_seq(xs@[0..i]) <= u64::MAX@)]
+#[ensures(forall<i> 0 <= i && i < xs@.len() ==> xs@[0..i+1][0..i] == xs@[0..i])]
+#[ensures(xs@[0..xs@.len()] == xs@)]
+pub fn sum_slice_lemma(xs: &[u64]) {
+    let _ = snapshot! { sum_seq_sub(xs@) };
+}
+
+#[logic(open)]
+#[variant(xs.len())]
+#[ensures(forall<i> 0 <= i && i <= xs.len() ==> sum_seq(xs[0..i]) <= sum_seq(xs))]
+pub fn sum_seq_sub(xs: Seq<u64>) {
+    pearlite! {
+        if xs.len() != 0 {
+            proof_assert! { xs[0..xs.len()] == xs };
+            proof_assert! { forall<i> 0 <= i && i < xs.len() ==> xs[0..xs.len() - 1][0..i] == xs[0..i] };
+            sum_seq_sub(xs[0..xs.len() - 1])
+        }
+    }
+}
+
 /// Shuffle the elements of a slice
 #[ensures((^slice)@.permutation_of((*slice)@))]
 pub fn shuffle<T>(slice: &mut [T]) {
@@ -70,8 +118,10 @@ pub fn random(i: usize) -> usize {
 #[trusted] // Currently unsupported
 #[ensures((^slice)@.permutation_of((*slice)@))]
 pub fn swap_slice<T>(slice: &mut [T], i: usize, j: usize) {
-    let [x, y] = slice.get_disjoint_mut([i, j]).unwrap();
-    std::mem::swap(x, y)
+    if i != j {
+        let [x, y] = slice.get_disjoint_mut([i, j]).unwrap();
+        std::mem::swap(x, y)
+    }
 }
 
 /// Equality test
