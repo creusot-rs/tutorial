@@ -18,5 +18,6 @@
                 "--message-format=json"
             ]
         }
-    }
+    },
+    "creusot.debug": true
 }
