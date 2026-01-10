@@ -23,15 +23,16 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1767776846,
-        "narHash": "sha256-3slgiVUN/0EPP3/kAhDZdiA1h1uR7I2v889efUTWhaY=",
+        "lastModified": 1768035092,
+        "narHash": "sha256-YlRRCOM0q1vXFAMFaZwU1TjV2TNSYHTnCz124mBxETA=",
         "owner": "creusot-rs",
         "repo": "creusot",
-        "rev": "ba94cc3a9f02803230d33a2a7b7a334246ac0e9d",
+        "rev": "fd089be0e96442f5e71605fbb129e6d6f7b264f3",
         "type": "github"
       },
       "original": {
         "owner": "creusot-rs",
+        "ref": "v0.9.0",
         "repo": "creusot",
         "type": "github"
       }
@@ -51,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1767889079,
-        "narHash": "sha256-sTMETyH6qRUlXE7MVieHv/sbbOc43V9a+VJFjnkj10c=",
+        "lastModified": 1768051660,
+        "narHash": "sha256-8hxNZdhSF+GsrDZVgowhvS2JH5nxt53Yitkho12TJNw=",
         "owner": "creusot-rs",
         "repo": "creusot-ide",
-        "rev": "9815e8b9392ccc378ef701eec6a834ab25f80130",
+        "rev": "dc5877ee2641e144c277ccb33b4b4cbd0df52d5a",
         "type": "github"
       },
       "original": {

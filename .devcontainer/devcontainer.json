@@ -1,6 +1,6 @@
 {
     "name": "Creusot tutorial",
-    "image": "ghcr.io/creusot-rs/creusot:latest",
+    "image": "ghcr.io/creusot-rs/creusot:v0.9.0",
 
     "containerEnv": {
         "CREUSOT_DATA_HOME": "/"
@@ -13,6 +13,7 @@
                 "creusot": {
                     "lspPath": "/bin/creusot-lsp"
                 },
+
                 "extensions": {
                     "autoCheckUpdates": false,
                     "ignoreRecommandations": true,
