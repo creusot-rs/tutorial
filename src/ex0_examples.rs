@@ -1,4 +1,4 @@
-//! Examples from the tutorial slides
+//! Examples, including ones from the tutorial slides
 
 use creusot_std::{ghost::perm::Perm, prelude::*};
 

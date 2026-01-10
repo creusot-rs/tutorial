@@ -29,8 +29,6 @@ pub fn gnome_sort(v: &mut [usize]) {
     }
 }
 
-// Unit tests
-
 #[test]
 fn test_1() {
     let mut v = [4, 2, 1, 3];
