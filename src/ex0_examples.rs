@@ -182,7 +182,7 @@ pub fn interior_mut() {
 #[ensures(x == *(^perm).val())]
 #[ensures((*perm).ward() == (^perm).ward())]
 pub unsafe fn write_ptr<T>(ptr: *const T, x: T, perm: Ghost<&mut Perm<*const T>>) {
-    /// SAFETY: Proved by Creusot
+    // SAFETY: Proved by Creusot
     let r = unsafe { Perm::as_mut(ptr as *mut T, perm) };
     *r = x;
 }
