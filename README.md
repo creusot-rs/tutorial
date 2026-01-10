@@ -48,9 +48,11 @@ on Github's servers, with a free quota of 120h monthly per user.
     You should see some checkmarks in the output indicating that
     the initial examples have been proved correct.
 
-- If you use VS Code with Rust Analyzer, this tutorial repository is already set up to use Creusot to type-check on save. If you also installed the [Creusot IDE](https://github.com/creusot-rs/creusot-ide) extension, you should see buttons appear to the left of `fn` definitions in your editor; clicking on one will
+- If you use VS Code with Rust Analyzer (*e.g.*, if you are on Codespaces), this tutorial repository is already set up to use Creusot to type-check on save. If you also installed the [Creusot IDE](https://github.com/creusot-rs/creusot-ide) extension, you should see buttons appear to the left of `fn` definitions in your editor; clicking on one will
 run SMT solvers to attempt to prove that the corresponding function
 satisfies its specification.
+
+    - Troubleshooting: If nothing happens in ~10 seconds after `cargo creusot` or `cargo creusot prove`, you can try to relaunch the LSP server with the following commands: `Ctrl+P` (or click the search bar at the top) > Write "> Creusot" (with the `>`!) > Select "Creusot: Restart language server"".
 
 - Otherwise:
 
