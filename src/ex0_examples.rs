@@ -1,6 +1,6 @@
 //! Examples, including ones from the tutorial slides
 
-use creusot_std::{ghost::perm::Perm, prelude::*};
+use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
 
 /// Sum of integers from 1 to n
 #[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
@@ -165,11 +165,24 @@ impl SumTo10 {
     }
 }
 
+/// Minimal example of interior mutability
+pub fn interior_mut() {
+    // SAFETY: Proved by Creusot
+    unsafe {
+        let (cell, mut perm) = PermCell::new(0);
+        let (b1, b2) = (&cell, &cell);
+        b1.set(ghost!{ &mut **perm }, 1);
+        let result = b2.take(ghost!{ &mut **perm });
+        proof_assert! { result == 1i32 };
+    }
+}
+
 /// Write `x` to `ptr`, given a suitable permission `perm`.
 #[requires(ptr == *(*perm).ward())]
 #[ensures(x == *(^perm).val())]
 #[ensures((*perm).ward() == (^perm).ward())]
 pub unsafe fn write_ptr<T>(ptr: *const T, x: T, perm: Ghost<&mut Perm<*const T>>) {
+    /// SAFETY: Proved by Creusot
     let r = unsafe { Perm::as_mut(ptr as *mut T, perm) };
     *r = x;
 }
