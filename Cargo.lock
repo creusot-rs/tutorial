@@ -10,7 +10,7 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "creusot-std"
-version = "0.8.0"
+version = "0.9.0"
 dependencies = [
  "creusot-std-proc",
  "num-rational",
@@ -18,7 +18,7 @@ dependencies = [
 
 [[package]]
 name = "creusot-std-proc"
-version = "0.8.0"
+version = "0.9.0"
 dependencies = [
  "proc-macro2",
  "quote",

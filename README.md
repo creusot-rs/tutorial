@@ -42,20 +42,13 @@ on Github's servers, with a free quota of 120h monthly per user.
     cd tutorial
     ```
 
-3. In the `tutorial` repository, create a file `.cargo/config.toml` with the contents below, replacing the string with the path to `creusot-std` within your copy of the `creusot` repository.
-
-    ```toml
-    [patch.crates-io]
-    creusot-std = { path = "/MY/PATH/TO/creusot/creusot-std" }
-    ```
-
 ## Usage
 
 - In the terminal, run `cargo creusot prove` to check that it works.
     You should see some checkmarks in the output indicating that
     the initial examples have been proved correct.
 
-- For VS Code users, this tutorial repository is already set up to use Creusot to type-check on save. If you also installed the [Creusot IDE](https://github.com/creusot-rs/creusot-ide) extension, you should see buttons appear to the left of `fn` definitions; clicking on them will
+- If you use VS Code with Rust Analyzer, this tutorial repository is already set up to use Creusot to type-check on save. If you also installed the [Creusot IDE](https://github.com/creusot-rs/creusot-ide) extension, you should see buttons appear to the left of `fn` definitions in your editor; clicking on one will
 run SMT solvers to attempt to prove that the corresponding function
 satisfies its specification.
 
