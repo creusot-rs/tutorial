@@ -1,4 +1,7 @@
 //! Examples, including ones from the tutorial slides
+//!
+//! These examples are already verified, to give you
+//! a sense of what Creusot specifications look like.
 
 use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
 
