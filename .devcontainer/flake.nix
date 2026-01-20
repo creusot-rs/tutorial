@@ -40,7 +40,7 @@
         contents =
           [rust-analyzer-code os-release]
           ++ (with pkgs; [busybox patchelf])
-          ++ (with pkgs.dockerTools; [caCertificates fakeNss usrBinEnv])
+          ++ (with pkgs.dockerTools; [caCertificates usrBinEnv])
           ++ (with creusot-ide.outputs.packages.${system}; [code lsp])
           ++ (with creusot.outputs.devShells.${system}.default; [rust-analyzer rust-src])
           ++ (with creusot.outputs.packages.${system}; [default]);
@@ -55,6 +55,16 @@
             "VSCODE_SERVER_PATCHELF_PATH=${pkgs.patchelf.outPath}/bin/patchelf"
           ];
         };
+
+        enableFakechroot = true;
+
+        fakeRootCommands = ''
+          echo "root:x:0:" > /etc/group
+          echo "nobody:x:65534:" >> /etc/group
+
+          echo "root:x:0:0:root user:/var/empty:/bin/sh" > /etc/passwd
+          echo "nobody:x:65534:65534:nobody:/var/empty:/bin/sh" >> /etc/passwd
+        '';
       };
 
       formatter = pkgs.alejandra;
