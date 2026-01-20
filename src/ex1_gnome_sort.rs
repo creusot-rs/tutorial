@@ -1,8 +1,12 @@
 //! # Exercise 1: Gnome sort
 //!
-//! A sorting function with the simplicity of a single loop.
+//! ## Read the tutorial
 //!
-//! ## Tutorial summary
+//! https://creusot-rs.github.io/creusot/guide/tutorial/gnome_sort.html
+//!
+//! ## Summary
+//!
+//! A sorting function with the simplicity of a single loop.
 //!
 //! 1. Formalize and prove the following specification:
 //!
@@ -28,8 +32,6 @@ pub fn gnome_sort(v: &mut [usize]) {
         }
     }
 }
-
-// Unit tests
 
 #[test]
 fn test_1() {

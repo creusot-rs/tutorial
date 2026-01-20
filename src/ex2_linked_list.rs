@@ -1,12 +1,16 @@
 //! # Exercise 2: Linked list
 //!
+//! ## Read the tutorial
+//!
+//! https://creusot-rs.github.io/creusot/guide/tutorial/linked_list.html
+//!
+//! ## Summary
+//!
 //! A linked list with methods `push_back`, `pop_front`, `push_front`.
 //!
 //! This implementation uses unsafe pointer operations,
 //! and we will use Creusot to verify their safety conditions
 //! thanks to ghost pointer permissions.
-//!
-//! ## Tutorial summary
 //!
 //! 1. Add a field to `List<T>` containing the pointer permissions.
 //! 2. Add a type invariant (`impl Invariant for List<T>`).
