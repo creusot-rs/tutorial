@@ -5,6 +5,13 @@
 
 use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
 
+#[ensures(^x == *y && ^y == *x)]
+pub fn swap<T>(x: &mut T, y: &mut T) {
+    // The general swap actually needs unsafe primitives.
+    // There is a more naive definition which requires some constraints on T.
+    std::mem::swap(x, y)
+}
+
 /// Sum of integers from 1 to n
 #[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
 #[ensures(result@ == n@ * (n@ + 1) / 2)]
