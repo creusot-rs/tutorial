@@ -73,8 +73,8 @@ pub fn sum_slice(xs: &[u64]) -> u64 {
     sum_slice_lemma(xs);
     let _ = xs
         .iter()
-        .map_inv(|x, produced| {
-            proof_assert! { sum@ + x@ == sum_seq(xs@[0..produced.len() + 1]) };
+        .map_inv(|x, _produced| {
+            proof_assert! { sum@ + x@ == sum_seq(xs@[0.._produced.len() + 1]) };
             sum += *x;
         })
         .collect::<()>();
@@ -86,6 +86,7 @@ pub fn sum_slice(xs: &[u64]) -> u64 {
 #[ensures(forall<i> 0 <= i && i < xs@.len() ==> xs@[0..i+1][0..i] == xs@[0..i])]
 #[ensures(xs@[0..xs@.len()] == xs@)]
 pub fn sum_slice_lemma(xs: &[u64]) {
+    _ = xs;
     let _ = snapshot! { sum_seq_sub(xs@) };
 }
 
@@ -182,8 +183,8 @@ pub fn interior_mut() {
         let (cell, mut perm) = PermCell::new(0);
         let (b1, b2) = (&cell, &cell);
         b1.set(ghost! { &mut **perm }, 1);
-        let result = b2.take(ghost! { &mut **perm });
-        proof_assert! { result == 1i32 };
+        let _result = b2.take(ghost! { &mut **perm });
+        proof_assert! { _result == 1i32 };
     }
 }
 

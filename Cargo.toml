@@ -8,6 +8,7 @@ creusot-std = "0.9.0"
 
 [features]
 solutions = []
+nightly = []
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(creusot)'] }
