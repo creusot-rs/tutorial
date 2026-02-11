@@ -9,8 +9,8 @@ use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
 
 #[trusted] // Exercise: write the contract
 pub fn swap<T>(x: &mut T, y: &mut T) {
-    // The general swap actually needs unsafe primitives.
-    // There is a more naive definition which requires some constraints on T.
+    // The naive definition would require some constraints on T.
+    // Here we use the general swap (which uses some unsafe primitives internally).
     std::mem::swap(x, y)
 }
 
