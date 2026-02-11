@@ -35,8 +35,9 @@ impl Protocol for ParallelAddAtomicInv {
     }
 }
 
-#[requires(tokens.contains(PARALLEL_ADD()))]
-pub fn parallel_add(mut tokens: Ghost<Tokens>) {
+#[cfg(feature = "nightly")]
+#[ensures(result == 4i32)]
+pub fn parallel_add() -> i32 {
     let (atomic, own) = AtomicI32::new(0);
 
     // Create our ghost state
@@ -104,6 +105,11 @@ pub fn parallel_add(mut tokens: Ghost<Tokens>) {
         inv.auth2.frag_lemma(&frag2);
         inv.own
     };
-    let n = atomic.into_inner(own); // Non-atomically read the atomic
-    proof_assert!(n == 4i32)
+    atomic.into_inner(own) // Non-atomically read the atomic
+}
+
+#[cfg(feature = "nightly")]
+#[test]
+fn test() {
+    assert! { parallel_add() == 4 }
 }

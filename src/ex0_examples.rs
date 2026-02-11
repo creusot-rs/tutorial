@@ -76,8 +76,8 @@ pub fn sum_slice(xs: &[u64]) -> u64 {
     sum_slice_lemma(xs);
     let _ = xs
         .iter()
-        .map_inv(|x, produced| {
-            proof_assert! { sum@ + x@ == sum_seq(xs@[0..produced.len() + 1]) };
+        .map_inv(|x, _produced| {
+            proof_assert! { sum@ + x@ == sum_seq(xs@[0.._produced.len() + 1]) };
             sum += *x;
         })
         .collect::<()>();
@@ -104,6 +104,7 @@ pub fn sum_seq(xs: Seq<u64>) -> Int {
 #[ensures(forall<i> 0 <= i && i < xs@.len() ==> xs@[0..i+1][0..i] == xs@[0..i])]
 #[ensures(xs@[0..xs@.len()] == xs@)]
 pub fn sum_slice_lemma(xs: &[u64]) {
+    _ = xs;
     let _ = snapshot! { sum_seq_sub(xs@) };
 }
 
@@ -210,8 +211,8 @@ pub fn interior_mut() {
         let cell = UnsafeCell::new(0); // `PermCell::new` will return a cell and a permission
         let (b1, b2) = (&cell, &cell); // Share the cell (this line won't change)
         *&mut *b1.get() = 1; // Replace this with `PermCell::set` or `PermCell::borrow_mut` to write to it
-        let result = *&*b2.get(); // Replace this with `PermCell::get` or `PermCell::borrow` to read from it
-        proof_assert! { result == 1i32 };
+        let _result = *&*b2.get(); // Replace this with `PermCell::get` or `PermCell::borrow` to read from it
+        proof_assert! { _result == 1i32 };
     }
 }
 

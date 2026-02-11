@@ -26,7 +26,8 @@ use std::thread;
 // Spawn two threads that add 2 to a shared atomic variable.
 // Prove that the final value is 4.
 #[trusted]
-pub fn parallel_add() {
+#[ensures(result == 4i32)]
+pub fn parallel_add() -> i32 {
     let atomic = AtomicI32::new(0);
 
     thread::scope(|s| {
@@ -44,6 +45,10 @@ pub fn parallel_add() {
         let _ = t2.join().unwrap();
     });
 
-    let n = atomic.into_inner(); // Non-atomically read the atomic
-    proof_assert!(n == 4i32)
+    atomic.into_inner() // Non-atomically read the atomic
+}
+
+#[test]
+fn test() {
+    assert! { parallel_add() == 4 }
 }
