@@ -1,29 +1,25 @@
-//! Examples, including ones from the tutorial slides
+//! A couple of short exercises.
 //!
-//! A couple of simple exercises.
-//! Goal: remove all `#[trusted]` with an "Exercise" comment.
+//! Objective: remove all `#[trusted]` with an "Exercise: ..." comment
+//! and make `cargo creusot prove` happy!
 //!
-//! See the tutorial slides or [`crate::solutions::ex0_examples`] for the solutions.
+//! Some exercises make use of the `creusot_std` API, which you can
+//! browse here: https://creusot-rs.github.io/creusot/doc/creusot_std/
+//!
+//! The main goal is to get comfortable with Creusot's syntax.
+//! It's perfectly fine to directly skip to the solutions and learn by osmosis.
+//! ([`crate::solutions::ex0_examples`])
+//!
+//! Most of these also appear in the tutorial slides linked in `README.md`.
 
-use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
+use creusot_std::prelude::*;
 
+/// Swap the contents of two mutable borrows
 #[trusted] // Exercise: write the contract
 pub fn swap<T>(x: &mut T, y: &mut T) {
     // The naive definition would require some constraints on T.
     // Here we use the general swap (which uses some unsafe primitives internally).
     std::mem::swap(x, y)
-}
-
-/// Sum of integers from 1 to n
-#[trusted] // Exercise: write the contract
-pub fn sum_first_n(n: u32) -> u32 {
-    let mut sum = 0;
-    let mut i = 0;
-    while i < n {
-        i += 1;
-        sum += i;
-    }
-    sum
 }
 
 /// Choose one of two mutable borrows
@@ -52,6 +48,24 @@ pub fn all_zero_map(v: &mut [u32]) {
             *x = 0;
         })
         .collect::<()>()
+}
+
+/// Add one
+#[trusted] // Exercise: Write the contract
+pub fn add_one(n: u32) -> u32 {
+    n + 1
+}
+
+/// Sum of integers from 1 to n
+#[trusted] // Exercise: write the contract
+pub fn sum_first_n(n: u32) -> u32 {
+    let mut sum = 0;
+    let mut i = 0;
+    while i < n {
+        i += 1;
+        sum += i;
+    }
+    sum
 }
 
 /// Sum of numbers in a slice
@@ -109,6 +123,7 @@ pub fn sum_seq_sub(xs: Seq<u64>) {
 
 /// Shuffle the elements of a slice
 #[trusted] // Exercise: write the contract, that the final slice is a permutation of the initial slice, and write the invariant.
+// Hint: use `Seq::is_permutation`.
 pub fn shuffle<T>(slice: &mut [T]) {
     let _old_slice = snapshot! {slice};
     // Hint: use the above snapshot in the invariant
@@ -154,49 +169,60 @@ where
     x > y
 }
 
-/// Pairs of elements that sum up to 10.
-/// This property is formalized by its type invariant below.
+/// As a simple example of type invariant, the following type
+/// is intended to contain pairs of elements that sum up to 10.
 pub struct SumTo10(i32, i32);
 
+// Exercise: fill out the type invariant, saying that
+// the two components of `self` sum up to 10.
 impl Invariant for SumTo10 {
     #[logic]
     fn invariant(self) -> bool {
-        pearlite! { self.0@ + self.1@ == 10 }
+        pearlite! {
+            true /* TODO */
+        }
     }
 }
 
 impl SumTo10 {
-    #[requires(x@ + y@ == 10)]
-    // Implicit: #[ensures(invariant(result))]
+    #[trusted] // Exercise: write the contract
     pub fn new(x: i32, y: i32) -> Self {
         SumTo10(x, y)
     }
 
-    // Implicit: #[requires(invariant(self))]
-    #[ensures(result@ == 10)]
+    #[trusted] // Exercise: write the contract guaranteeing that the result is 10
     pub fn sum(self) -> i32 {
         self.0 + self.1
     }
 }
 
+#[allow(unused)] // Remove this after completing the exercises below
+use creusot_std::{cell::PermCell, ghost::perm::Perm};
+
 /// Minimal example of interior mutability
+#[trusted] // Exercise: replace `UnsafeCell` with `PermCell`
+// Then use the associated permission to write and read the cell.
+// No contract for this function.
 pub fn interior_mut() {
-    // SAFETY: Proved by Creusot
+    use std::cell::UnsafeCell;
+    // SAFETY: To be proved by Creusot
     unsafe {
-        let (cell, mut perm) = PermCell::new(0);
-        let (b1, b2) = (&cell, &cell);
-        b1.set(ghost! { &mut **perm }, 1);
-        let result = b2.take(ghost! { &mut **perm });
+        let cell = UnsafeCell::new(0); // `PermCell::new` will return a cell and a permission
+        let (b1, b2) = (&cell, &cell); // Share the cell (this line won't change)
+        *&mut *b1.get() = 1; // Replace this with `PermCell::set` or `PermCell::borrow_mut` to write to it
+        let result = *&*b2.get(); // Replace this with `PermCell::get` or `PermCell::borrow` to read from it
         proof_assert! { result == 1i32 };
     }
 }
 
 /// Write `x` to `ptr`, given a suitable permission `perm`.
-#[requires(ptr == *(*perm).ward())]
-#[ensures(x == *(^perm).val())]
-#[ensures((*perm).ward() == (^perm).ward())]
+#[trusted]
+// Exercise: Rewrite the pointer cast with `Perm::as_mut` (making use of the permission)
+// Then write the contract of `write_ptr`, "`x` is written into `ptr`"
+// Hint: Take inspiration from the contract of `Perm::as_mut`.
+#[allow(unused)] // Remove this
 pub unsafe fn write_ptr<T>(ptr: *const T, x: T, perm: Ghost<&mut Perm<*const T>>) {
-    // SAFETY: Proved by Creusot
-    let r = unsafe { Perm::as_mut(ptr as *mut T, perm) };
+    // SAFETY: To be proved by Creusot
+    let r = unsafe { &mut *(ptr as *mut T) }; // Replace this cast with `Perm::as_mut`
     *r = x;
 }

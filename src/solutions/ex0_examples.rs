@@ -1,30 +1,13 @@
-//! Examples, including ones from the tutorial slides
-//!
-//! These examples are already verified, to give you
+//! Here are some verified examples to give you
 //! a sense of what Creusot specifications look like.
 
-use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
+use creusot_std::prelude::*;
 
 #[ensures(^x == *y && ^y == *x)]
 pub fn swap<T>(x: &mut T, y: &mut T) {
     // The general swap actually needs unsafe primitives.
     // There is a more naive definition which requires some constraints on T.
     std::mem::swap(x, y)
-}
-
-/// Sum of integers from 1 to n
-#[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
-#[ensures(result@ == n@ * (n@ + 1) / 2)]
-pub fn sum_first_n(n: u32) -> u32 {
-    let mut sum = 0;
-    let mut i = 0;
-    #[invariant(sum@ == i@ * (i@ + 1) / 2)]
-    #[invariant(i@ <= n@)]
-    while i < n {
-        i += 1;
-        sum += i;
-    }
-    sum
 }
 
 /// Choose one of two mutable borrows
@@ -54,6 +37,21 @@ pub fn all_zero_map(v: &mut [u32]) {
             *x = 0;
         })
         .collect::<()>()
+}
+
+/// Sum of integers from 1 to n
+#[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
+#[ensures(result@ == n@ * (n@ + 1) / 2)]
+pub fn sum_first_n(n: u32) -> u32 {
+    let mut sum = 0;
+    let mut i = 0;
+    #[invariant(sum@ == i@ * (i@ + 1) / 2)]
+    #[invariant(i@ <= n@)]
+    while i < n {
+        i += 1;
+        sum += i;
+    }
+    sum
 }
 
 #[logic(open)]
@@ -174,6 +172,8 @@ impl SumTo10 {
         self.0 + self.1
     }
 }
+
+use creusot_std::{cell::PermCell, ghost::perm::Perm};
 
 /// Minimal example of interior mutability
 pub fn interior_mut() {
