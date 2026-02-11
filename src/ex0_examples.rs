@@ -196,7 +196,7 @@ impl SumTo10 {
     }
 }
 
-#[allow(unused)] // Remove this after completing the exercises below
+#[allow(unused)] // Remove this attribute (unneeded after completing the exercise below)
 use creusot_std::{cell::PermCell, ghost::perm::Perm};
 
 /// Minimal example of interior mutability
@@ -220,7 +220,7 @@ pub fn interior_mut() {
 // Exercise: Rewrite the pointer cast with `Perm::as_mut` (making use of the permission)
 // Then write the contract of `write_ptr`, "`x` is written into `ptr`"
 // Hint: Take inspiration from the contract of `Perm::as_mut`.
-#[allow(unused)] // Remove this
+#[allow(unused)] // Remove this attribute
 pub unsafe fn write_ptr<T>(ptr: *const T, x: T, perm: Ghost<&mut Perm<*const T>>) {
     // SAFETY: To be proved by Creusot
     let r = unsafe { &mut *(ptr as *mut T) }; // Replace this cast with `Perm::as_mut`
