@@ -1,13 +1,11 @@
 //! Examples, including ones from the tutorial slides
 //!
-//! A couple of simple exercises.
-//! Goal: remove all `#[trusted]` with an "Exercise" comment.
-//!
-//! See the tutorial slides or [`crate::solutions::ex0_examples`] for the solutions.
+//! These examples are already verified, to give you
+//! a sense of what Creusot specifications look like.
 
 use creusot_std::{cell::PermCell, ghost::perm::Perm, prelude::*};
 
-#[trusted] // Exercise: write the contract
+#[ensures(^x == *y && ^y == *x)]
 pub fn swap<T>(x: &mut T, y: &mut T) {
     // The general swap actually needs unsafe primitives.
     // There is a more naive definition which requires some constraints on T.
@@ -15,10 +13,13 @@ pub fn swap<T>(x: &mut T, y: &mut T) {
 }
 
 /// Sum of integers from 1 to n
-#[trusted] // Exercise: write the contract
+#[requires(n@ * (n@ + 1) / 2 <= u32::MAX@)]
+#[ensures(result@ == n@ * (n@ + 1) / 2)]
 pub fn sum_first_n(n: u32) -> u32 {
     let mut sum = 0;
     let mut i = 0;
+    #[invariant(sum@ == i@ * (i@ + 1) / 2)]
+    #[invariant(i@ <= n@)]
     while i < n {
         i += 1;
         sum += i;
@@ -27,23 +28,24 @@ pub fn sum_first_n(n: u32) -> u32 {
 }
 
 /// Choose one of two mutable borrows
-#[trusted] // Exercise: write the contract
+#[ensures(result == if b { x } else { y })]
 pub fn choose<'a, T>(b: bool, x: &'a mut T, y: &'a mut T) -> &'a mut T {
     if b { x } else { y }
 }
 
 /// Set a slice to zero
-#[trusted] // Exercise: write the contract and the invariant
+#[ensures((^v)@.len() == v@.len())]
+#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
 pub fn all_zero(v: &mut [u32]) {
-    // Hint: In the invariant, a special variable `produced: Seq<&mut u32>` is available,
-    // containing all past values produced by the iterator (not including the current `x` at the start of the loop)
+    #[invariant(forall<i> 0 <= i && i < produced.len() ==> (^produced[i])@ == 0)]
     for x in v.iter_mut() {
         *x = 0;
     }
 }
 
 /// Set a slice to zero, using `Iterator::map`.
-#[trusted] // Exercise: write the contract
+#[ensures((^v)@.len() == v@.len())]
+#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
 pub fn all_zero_map(v: &mut [u32]) {
     // We could use `for_each` instead of `map` in theory,
     // but it's currently missing a specification in Creusot.
@@ -54,9 +56,20 @@ pub fn all_zero_map(v: &mut [u32]) {
         .collect::<()>()
 }
 
-/// Sum of numbers in a slice
-#[trusted] // Exercise: write the contract
-// Hint: use `sum_seq(xs@)`
+#[logic(open)]
+#[variant(xs.len())]
+pub fn sum_seq(xs: Seq<u64>) -> Int {
+    pearlite! {
+        if xs.len() == 0 {
+            0
+        } else {
+            sum_seq(xs[0..xs.len() - 1]) + xs[xs.len() - 1]@
+        }
+    }
+}
+
+#[requires(sum_seq(xs@) <= u64::MAX@)]
+#[ensures(result@ == sum_seq(xs@))]
 pub fn sum_slice(xs: &[u64]) -> u64 {
     let mut sum = 0;
     sum_slice_lemma(xs);
@@ -70,21 +83,6 @@ pub fn sum_slice(xs: &[u64]) -> u64 {
     sum
 }
 
-/// Sum of numbers in a sequence, as a logic function
-#[logic(open)]
-#[variant(xs.len())]
-pub fn sum_seq(xs: Seq<u64>) -> Int {
-    pearlite! {
-        if xs.len() == 0 {
-            0
-        } else {
-            sum_seq(xs[0..xs.len() - 1]) + xs[xs.len() - 1]@
-        }
-    }
-}
-
-/// Lemmas for `sum_slice`
-// These lemmas are already proved, and used in `sum_slices`. No need to do anything.
 #[requires(sum_seq(xs@) <= u64::MAX@)]
 #[ensures(forall<i> 0 <= i && i <= xs@.len() ==> sum_seq(xs@[0..i]) <= u64::MAX@)]
 #[ensures(forall<i> 0 <= i && i < xs@.len() ==> xs@[0..i+1][0..i] == xs@[0..i])]
@@ -93,8 +91,7 @@ pub fn sum_slice_lemma(xs: &[u64]) {
     let _ = snapshot! { sum_seq_sub(xs@) };
 }
 
-/// "Proof" of `sum_slice_lemma`.
-#[logic]
+#[logic(open)]
 #[variant(xs.len())]
 #[ensures(forall<i> 0 <= i && i <= xs.len() ==> sum_seq(xs[0..i]) <= sum_seq(xs))]
 pub fn sum_seq_sub(xs: Seq<u64>) {
@@ -108,17 +105,16 @@ pub fn sum_seq_sub(xs: Seq<u64>) {
 }
 
 /// Shuffle the elements of a slice
-#[trusted] // Exercise: write the contract, that the final slice is a permutation of the initial slice, and write the invariant.
+#[ensures((^slice)@.permutation_of((*slice)@))]
 pub fn shuffle<T>(slice: &mut [T]) {
     let _old_slice = snapshot! {slice};
-    // Hint: use the above snapshot in the invariant
+    #[invariant((*slice)@.permutation_of((**_old_slice)@))]
     for i in 1..slice.len() {
-        // Hint: the specs of `random` and `swap_slice` are already written.
         swap_slice(slice, i, random(i))
     }
 }
 
-/// Helper for `shuffle`.
+/// Helper for shuffle.
 /// A random number between `0` and `i`.
 #[ensures(0 <= result@ && result@ <= i@)]
 pub fn random(i: usize) -> usize {
@@ -127,9 +123,9 @@ pub fn random(i: usize) -> usize {
     0
 }
 
-/// Helper for `shuffle`.
+/// Helper for shuffle.
 /// Swap two elements of a slice.
-#[trusted] // Currently unsupported (Not an exercise!)
+#[trusted] // Currently unsupported
 #[ensures((^slice)@.permutation_of((*slice)@))]
 pub fn swap_slice<T>(slice: &mut [T], i: usize, j: usize) {
     if i != j {
@@ -139,13 +135,13 @@ pub fn swap_slice<T>(slice: &mut [T], i: usize, j: usize) {
 }
 
 /// Equality test
-#[trusted] // Exercise: write the contract
+#[ensures(result == (x.deep_model() == y.deep_model()))]
 pub fn equal<T: Eq + DeepModel>(x: T, y: T) -> bool {
     x == y
 }
 
 /// Ordering test
-#[trusted] // Exercise: write the contract
+#[ensures(result == (x.deep_model() > y.deep_model()))]
 pub fn greater<T>(x: T, y: T) -> bool
 where
     T: Ord + DeepModel,
