@@ -4,9 +4,11 @@ Learn how to formally verify Rust programs with [Creusot](https://github.com/cre
 
 ## Contents
 
-- [Examples](src/ex0_examples.rs) from the [slides of the POPL 2026 tutorial presentation][slides]
+- [Warm up exercises](src/ex0_examples.rs), taken from the [slides of the POPL 2026 tutorial presentation][slides]
 - [Exercise 1: Gnome sort](https://creusot-rs.github.io/creusot/guide/tutorial/gnome_sort.html)
 - [Exercise 2: Linked list](https://creusot-rs.github.io/creusot/guide/tutorial/linked_list.html)
+
+Solutions are available in `src/solutions/`. They are also worth checking out for a quick glimpse of Creusot specifications!
 
 [slides]: https://docs.google.com/presentation/d/e/2PACX-1vQVC3kV9ZRg7KBRFGxKuCDwLQIyi9OpZJTRbIG3tMm1dLoNYi7VSqM163l4k2zqicWd5WiyTV1MRWiw/pub?start=false&loop=false&delayms=3000
 
@@ -29,6 +31,21 @@ on Github's servers, with a free quota of 120h monthly per user.
 ### Install Creusot locally
 
 1. [Follow these instructions to install Creusot.](https://creusot-rs.github.io/creusot/guide/installation.html)
+
+    - This tutorial currently works with Creusot 0.9.0, so make sure to check out and install that version for the smoothest experience.
+
+        ```
+        # In the creusot repository, before running `./INSTALL`
+        git checkout v0.9.0
+        ```
+
+    - The dev version of Creusot should also mostly work, up to redirecting to your local version of `creusot-std`.
+
+        ```toml
+        # Create the file `.cargo/config.toml` with the following contents
+        [patch.crates-io]
+        creusot-std = { path = "/PATH/TO/YOUR/creusot/creusot-std" }
+        ```
 
 2. (Optional) For VS Code users, you can install [Creusot IDE](https://github.com/creusot-rs/creusot-ide), a VS Code extension that provides syntax highlighting and buttons to run Creusot in the editor.
 
