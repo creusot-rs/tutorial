@@ -1,3 +1,4 @@
+#[cfg_attr(not(feature = "nightly"), allow(unused))]
 use creusot_std::{
     ghost::{
         Committer,
@@ -15,6 +16,7 @@ use creusot_std::{
 
 declare_namespace! { PARALLEL_ADD }
 
+#[cfg_attr(not(feature = "nightly"), allow(dead_code))]
 struct ParallelAddAtomicInv {
     own: Box<Perm<AtomicI32>>,
     auth1: Authority<Option<Excl<bool>>>,
