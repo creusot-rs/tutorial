@@ -8,7 +8,7 @@ Learn how to formally verify Rust programs with [Creusot](https://github.com/cre
 - [Exercise 1: Gnome sort](https://creusot-rs.github.io/creusot/guide/tutorial/gnome_sort.html)
 - [Exercise 2: Linked list](https://creusot-rs.github.io/creusot/guide/tutorial/linked_list.html)
 
-Solutions are available in `src/solutions/`. They are also worth checking out for a quick glimpse of Creusot specifications!
+Check out the [solutions](./src/solutions) for a quick glimpse of Creusot specifications!
 
 [slides]: https://docs.google.com/presentation/d/e/2PACX-1vQVC3kV9ZRg7KBRFGxKuCDwLQIyi9OpZJTRbIG3tMm1dLoNYi7VSqM163l4k2zqicWd5WiyTV1MRWiw/pub?start=false&loop=false&delayms=3000
 
