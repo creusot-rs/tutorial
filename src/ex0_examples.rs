@@ -43,15 +43,39 @@ pub fn next_u32(counter: &mut u32) -> u32 {
 }
 
 /// Sum of integers from 1 to n
-#[trusted] // Exercise: write the contract
+#[trusted] // Exercise: write the contract and the loop invariant
 pub fn sum_first_n(n: u32) -> u32 {
     let mut sum = 0;
     let mut i = 0;
+    // #[invariant(/* FIXME */)]
     while i < n {
         i += 1;
         sum += i;
     }
     sum
+
+    // Hint: verifying a PREcondition, POSTcondition, and INVariant
+    // reduces to verifying the following loop-free programs:
+    //
+    // ```
+    // assume! { PRE }
+    // sum = 0;
+    // i = 0;
+    // assert! { INV }
+    // ```
+    //
+    // ```
+    // assume! { INV && i < n }
+    // i += 1;
+    // sum += i;
+    // assert! { INV }
+    // ```
+    //
+    // ```
+    // assume! { INV && !(i < n) }
+    // let result = sum
+    // assert! { POST(result) }
+    // ```
 }
 
 /// Set a slice to zero
