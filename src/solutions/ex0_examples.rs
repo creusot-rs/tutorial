@@ -23,29 +23,6 @@ pub fn choose<'a, T>(b: bool, x: &'a mut T, y: &'a mut T) -> &'a mut T {
     if b { x } else { y }
 }
 
-/// Set a slice to zero
-#[ensures((^v)@.len() == v@.len())]
-#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
-pub fn all_zero(v: &mut [u32]) {
-    #[invariant(forall<i> 0 <= i && i < produced.len() ==> (^produced[i])@ == 0)]
-    for x in v.iter_mut() {
-        *x = 0;
-    }
-}
-
-/// Set a slice to zero, using `Iterator::map`.
-#[ensures((^v)@.len() == v@.len())]
-#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
-pub fn all_zero_map(v: &mut [u32]) {
-    // We could use `for_each` instead of `map` in theory,
-    // but it's currently missing a specification in Creusot.
-    v.iter_mut()
-        .map(|x| {
-            *x = 0;
-        })
-        .collect::<()>()
-}
-
 #[requires(*counter < u32::MAX)]
 #[ensures(result == *counter)]
 #[ensures((^counter)@ == (*counter)@ + 1)]
@@ -68,6 +45,29 @@ pub fn sum_first_n(n: u32) -> u32 {
         sum += i;
     }
     sum
+}
+
+/// Set a slice to zero
+#[ensures((^v)@.len() == v@.len())]
+#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
+pub fn all_zero(v: &mut [u32]) {
+    #[invariant(forall<i> 0 <= i && i < produced.len() ==> (^produced[i])@ == 0)]
+    for x in v.iter_mut() {
+        *x = 0;
+    }
+}
+
+/// Set a slice to zero, using `Iterator::map`.
+#[ensures((^v)@.len() == v@.len())]
+#[ensures(forall<i> 0 <= i && i < v@.len() ==> (^v)@[i]@ == 0)]
+pub fn all_zero_map(v: &mut [u32]) {
+    // We could use `for_each` instead of `map` in theory,
+    // but it's currently missing a specification in Creusot.
+    v.iter_mut()
+        .map(|x| {
+            *x = 0;
+        })
+        .collect::<()>()
 }
 
 #[logic(open)]

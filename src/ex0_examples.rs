@@ -34,6 +34,26 @@ pub fn choose<'a, T>(b: bool, x: &'a mut T, y: &'a mut T) -> &'a mut T {
     if b { x } else { y }
 }
 
+/// Increment the counter and return its previous value
+#[trusted] // Exercise: Write the contract
+pub fn next_u32(counter: &mut u32) -> u32 {
+    let n = *counter;
+    *counter += 1;
+    n
+}
+
+/// Sum of integers from 1 to n
+#[trusted] // Exercise: write the contract
+pub fn sum_first_n(n: u32) -> u32 {
+    let mut sum = 0;
+    let mut i = 0;
+    while i < n {
+        i += 1;
+        sum += i;
+    }
+    sum
+}
+
 /// Set a slice to zero
 #[trusted] // Exercise: write the contract and the invariant
 pub fn all_zero(v: &mut [u32]) {
@@ -54,26 +74,6 @@ pub fn all_zero_map(v: &mut [u32]) {
             *x = 0;
         })
         .collect::<()>()
-}
-
-/// Increment the counter and return its previous value
-#[trusted] // Exercise: Write the contract
-pub fn next_u32(counter: &mut u32) -> u32 {
-    let n = *counter;
-    *counter += 1;
-    n
-}
-
-/// Sum of integers from 1 to n
-#[trusted] // Exercise: write the contract
-pub fn sum_first_n(n: u32) -> u32 {
-    let mut sum = 0;
-    let mut i = 0;
-    while i < n {
-        i += 1;
-        sum += i;
-    }
-    sum
 }
 
 /// Sum of numbers in a slice
