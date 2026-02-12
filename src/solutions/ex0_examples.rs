@@ -3,6 +3,13 @@
 
 use creusot_std::prelude::*;
 
+/// Add one
+#[requires(n < u32::MAX)]
+#[ensures(result@ == n@ + 1)]
+pub fn add_one(n: u32) -> u32 {
+    n + 1
+}
+
 #[ensures(^x == *y && ^y == *x)]
 pub fn swap<T>(x: &mut T, y: &mut T) {
     // The general swap actually needs unsafe primitives.
@@ -37,6 +44,15 @@ pub fn all_zero_map(v: &mut [u32]) {
             *x = 0;
         })
         .collect::<()>()
+}
+
+#[requires(*counter < u32::MAX)]
+#[ensures(result == *counter)]
+#[ensures((^counter)@ == (*counter)@ + 1)]
+pub fn next_u32(counter: &mut u32) -> u32 {
+    let n = *counter;
+    *counter += 1;
+    n
 }
 
 /// Sum of integers from 1 to n

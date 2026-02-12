@@ -14,6 +14,12 @@
 
 use creusot_std::prelude::*;
 
+/// Add one
+#[trusted] // Exercise: Write the contract
+pub fn add_one(n: u32) -> u32 {
+    n + 1
+}
+
 /// Swap the contents of two mutable borrows
 #[trusted] // Exercise: write the contract
 pub fn swap<T>(x: &mut T, y: &mut T) {
@@ -50,10 +56,12 @@ pub fn all_zero_map(v: &mut [u32]) {
         .collect::<()>()
 }
 
-/// Add one
+/// Increment the counter and return its previous value
 #[trusted] // Exercise: Write the contract
-pub fn add_one(n: u32) -> u32 {
-    n + 1
+pub fn next_u32(counter: &mut u32) -> u32 {
+    let n = *counter;
+    *counter += 1;
+    n
 }
 
 /// Sum of integers from 1 to n
