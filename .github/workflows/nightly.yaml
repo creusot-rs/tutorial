@@ -1,0 +1,50 @@
+name: Nightly
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 5.3.0
+          opam-pin: false
+
+      - name: Clone Creusot source
+        run: |
+          cd ..
+          git clone https://github.com/creusot-rs/creusot --depth 1
+
+      - name: Cache Creusot build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            creusot/target
+            ~/.local/share/creusot
+          key: ${{ runner.os }}-nightly
+
+      - name: System dependencies
+        run: |
+          sudo apt update && sudo apt install opam libzmq3-dev
+          opam init --bare
+          opam --cli=2.1 var --global in-creusot-ci=true
+
+      - name: Install Creusot
+        run: |
+          cd ../creusot
+          ./INSTALL
+
+      - name: Write .cargo/config.toml
+        run: |
+          mkdir .cargo
+          echo -e '[patch.crates-io]\ncreusot-std = { path = "../creusot/creusot-std" }' > .cargo/config.toml
+
+      - name: Run Creusot
+        run: cargo creusot prove -- -F"solutions nightly"
