@@ -1,20 +1,28 @@
 #[cfg_attr(not(feature = "nightly"), allow(unused))]
 use creusot_std::{
     ghost::{
-        Committer,
         invariant::{AtomicInvariant, Protocol, Tokens, declare_namespace},
         perm::Perm,
         resource::{Authority, Fragment},
     },
     logic::{Id, ra::excl::Excl},
     prelude::*,
-    std::{
-        sync::AtomicI32,
-        thread::{self, JoinHandleExt},
-    },
+    std::thread::{self, JoinHandleExt},
 };
 
+#[cfg(not(feature = "nightly"))]
+use creusot_std::std::sync::AtomicI32;
+
+#[cfg(feature = "nightly")]
+use creusot_std::std::sync::atomic_sc::AtomicI32;
+
 declare_namespace! { PARALLEL_ADD }
+
+#[cfg(feature = "nightly")]
+type Committer = creusot_std::ghost::Committer<AtomicI32>;
+
+#[cfg(not(feature = "nightly"))]
+use creusot_std::ghost::Committer;
 
 #[cfg_attr(not(feature = "nightly"), allow(dead_code))]
 struct ParallelAddAtomicInv {

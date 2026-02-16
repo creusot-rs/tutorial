@@ -41,8 +41,9 @@ jobs:
           cd ../creusot
           ./INSTALL
 
-      - name: Update Cargo.toml for nightly
-        run: cargo creusot init
+      - name: Patch Cargo config for nightly
+        run: |
+          sed -i 's%"0\.9\.0"%{ path = "../creusot/creusot-std", features = ["sc-drf"] }%' Cargo.toml
 
       - name: Run Creusot
         run: cargo creusot prove -- -F"solutions nightly"

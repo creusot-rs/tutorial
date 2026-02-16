@@ -64,4 +64,4 @@ jobs:
           ./INSTALL
 
       - name: Run Creusot
-        run: cargo creusot prove -- -F"solutions nightly"
+        run: cargo creusot prove -- -Fsolutions
