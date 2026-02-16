@@ -41,10 +41,8 @@ jobs:
           cd ../creusot
           ./INSTALL
 
-      - name: Write .cargo/config.toml
-        run: |
-          mkdir .cargo
-          echo -e '[patch.crates-io]\ncreusot-std = { path = "../creusot/creusot-std" }' > .cargo/config.toml
+      - name: Update Cargo.toml for nightly
+        run: cargo creusot init
 
       - name: Run Creusot
         run: cargo creusot prove -- -F"solutions nightly"
