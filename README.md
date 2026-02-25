@@ -32,11 +32,11 @@ on Github's servers, with a free quota of 120h monthly per user.
 
 1. [Follow these instructions to install Creusot.](https://creusot-rs.github.io/creusot/guide/installation.html)
 
-    - This tutorial currently works with Creusot 0.9.0, so make sure to check out and install that version for the smoothest experience.
+    - This tutorial currently works with Creusot 0.10.0, so make sure to check out and install that version for the smoothest experience.
 
         ```
         # In the creusot repository, before running `./INSTALL`
-        git checkout v0.9.0
+        git checkout v0.10.0
         ```
 
     - The dev version of Creusot should also mostly work, up to redirecting to your local version of `creusot-std`.
