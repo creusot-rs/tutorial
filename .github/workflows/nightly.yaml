@@ -43,7 +43,8 @@ jobs:
 
       - name: Patch Cargo config for nightly
         run: |
-          sed -i 's%"0\.9\.0"%{ path = "../creusot/creusot-std", features = ["sc-drf"] }%' Cargo.toml
+          mkdir .cargo
+          echo -e "[patch.crates-io]\ncreusot-std = { path = "../creusot/creusot-std" }" > .cargo/config.toml
 
       - name: Run Creusot
-        run: cargo creusot prove -- -F"solutions nightly"
+        run: cargo creusot prove -- -Fsolutions

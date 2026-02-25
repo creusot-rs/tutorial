@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CREUSOT_VERSION: v0.9.0
+  CREUSOT_VERSION: v0.10.0
 
 jobs:
   rust:

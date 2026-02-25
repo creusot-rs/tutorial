@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1768063510,
-        "narHash": "sha256-h1T51q6LLN2qfbXQui8OrIxQPEEKAKRerTmDyoatxB4=",
+        "lastModified": 1770581955,
+        "narHash": "sha256-w5hErdawwjEKfnmxrt5Qzgpe8GJDVfAL5ygC0bOmuQk=",
         "owner": "creusot-rs",
         "repo": "creusot-ide",
-        "rev": "1c7a62336275f77e8fd82fbdc151f5c4546f8482",
+        "rev": "0161add1b81c96f06e095f747db9ff2efc5b939d",
         "type": "github"
       },
       "original": {

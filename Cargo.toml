@@ -4,11 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-creusot-std = "0.9.0"
+creusot-std = { version = "0.10.0", features = ["sc-drf"] }
 
 [features]
 solutions = []
-nightly = []
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(creusot)'] }

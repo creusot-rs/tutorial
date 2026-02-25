@@ -1,6 +1,7 @@
-#[cfg_attr(not(feature = "nightly"), allow(unused))]
+use creusot_std::std::sync::atomic_sc::AtomicI32;
 use creusot_std::{
     ghost::{
+        Committer,
         invariant::{AtomicInvariant, Protocol, Tokens, declare_namespace},
         perm::Perm,
         resource::{Authority, Fragment},
@@ -10,21 +11,8 @@ use creusot_std::{
     std::thread::{self, JoinHandleExt},
 };
 
-#[cfg(not(feature = "nightly"))]
-use creusot_std::std::sync::AtomicI32;
-
-#[cfg(feature = "nightly")]
-use creusot_std::std::sync::atomic_sc::AtomicI32;
-
 declare_namespace! { PARALLEL_ADD }
 
-#[cfg(feature = "nightly")]
-type Committer = creusot_std::ghost::Committer<AtomicI32>;
-
-#[cfg(not(feature = "nightly"))]
-use creusot_std::ghost::Committer;
-
-#[cfg_attr(not(feature = "nightly"), allow(dead_code))]
 struct ParallelAddAtomicInv {
     own: Box<Perm<AtomicI32>>,
     auth1: Authority<Option<Excl<bool>>>,
@@ -45,7 +33,6 @@ impl Protocol for ParallelAddAtomicInv {
     }
 }
 
-#[cfg(feature = "nightly")]
 #[ensures(result == 4i32)]
 pub fn parallel_add() -> i32 {
     let (atomic, own) = AtomicI32::new(0);
@@ -83,7 +70,7 @@ pub fn parallel_add() -> i32 {
         let t1 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut Committer| {
+                ghost! { |c: &mut Committer<AtomicI32>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth1.update(*frag1, snapshot!((Some(Excl(true)), Some(Excl(true)))));
                         c.shoot(&mut inv.own);
@@ -95,7 +82,7 @@ pub fn parallel_add() -> i32 {
         let t2 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut Committer| {
+                ghost! { |c: &mut Committer<AtomicI32>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth2.update(*frag2, snapshot!((Some(Excl(true)), Some(Excl(true)))));
                         c.shoot(&mut inv.own);
@@ -118,7 +105,6 @@ pub fn parallel_add() -> i32 {
     atomic.into_inner(own) // Non-atomically read the atomic
 }
 
-#[cfg(feature = "nightly")]
 #[test]
 fn test() {
     assert! { parallel_add() == 4 }
