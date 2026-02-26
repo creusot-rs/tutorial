@@ -63,5 +63,8 @@ jobs:
           cd ../creusot
           ./INSTALL
 
+      - name: Update registry
+        run: cargo update --dry-run
+
       - name: Run Creusot
         run: cargo creusot prove -- -Fsolutions
