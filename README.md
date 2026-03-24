@@ -1,12 +1,12 @@
 # Creusot Tutorial
 
-Learn how to formally verify Rust programs with [Creusot](https://github.com/creusot-rs/creusot).
+Learn how to formally verify Rust programs with [Creusot](https://creusot.rs).
 
 ## Contents
 
 - [Warm up exercises](src/ex0_examples.rs), taken from the [slides of the POPL 2026 tutorial presentation][slides]
-- [Exercise 1: Gnome sort](https://creusot-rs.github.io/creusot/guide/tutorial/gnome_sort.html)
-- [Exercise 2: Linked list](https://creusot-rs.github.io/creusot/guide/tutorial/linked_list.html)
+- [Exercise 1: Gnome sort](https://guide.creusot.rs/tutorial/gnome_sort.html)
+- [Exercise 2: Linked list](https://guide.creusot.rs/tutorial/linked_list.html)
 
 Check out the [solutions](./src/solutions) for a quick glimpse of Creusot specifications!
 
@@ -30,7 +30,7 @@ on Github's servers, with a free quota of 120h monthly per user.
 
 ### Install Creusot locally
 
-1. [Follow these instructions to install Creusot.](https://creusot-rs.github.io/creusot/guide/installation.html)
+1. [Follow these instructions to install Creusot.](https://guide.creusot.rs/installation.html)
 
     - This tutorial currently works with Creusot 0.10.0, so make sure to check out and install that version for the smoothest experience.
 

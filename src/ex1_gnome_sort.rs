@@ -2,7 +2,7 @@
 //!
 //! ## Read the tutorial
 //!
-//! https://creusot-rs.github.io/creusot/guide/tutorial/gnome_sort.html
+//! https://guide.creusot.rs/tutorial/gnome_sort.html
 //!
 //! ## Summary
 //!

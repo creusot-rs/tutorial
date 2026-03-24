@@ -2,7 +2,7 @@
 //!
 //! ## Read the tutorial
 //!
-//! https://creusot-rs.github.io/creusot/guide/tutorial/linked_list.html
+//! https://guide.creusot.rs/tutorial/linked_list.html
 //!
 //! ## Summary
 //!

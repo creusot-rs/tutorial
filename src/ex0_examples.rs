@@ -4,7 +4,7 @@
 //! and make `cargo creusot prove` happy!
 //!
 //! Some exercises make use of the `creusot_std` API, which you can
-//! browse here: https://creusot-rs.github.io/creusot/doc/creusot_std/
+//! browse here: https://doc.creusot.rs/creusot_std/
 //!
 //! The main goal is to get comfortable with Creusot's syntax.
 //! It's perfectly fine to directly skip to the solutions and learn by osmosis.
