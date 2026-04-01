@@ -16,7 +16,7 @@ use creusot_std::{
 
 use std::sync::atomic::AtomicI32;
 // TODO: Replace with the creusot_std version of AtomicI32 (you will also need the committer ☺)
-// use creusot_std::std::sync::{AtomicI32, UpdateCommitter};
+// use creusot_std::sync::{atomic::Ordering, atomic_sc::AtomicI32, committer::Committer};
 
 use std::thread;
 // TODO: Replace with the creusot_std version of thread
