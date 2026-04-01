@@ -1,4 +1,3 @@
-use creusot_std::std::sync::atomic_sc::{AtomicI32, UpdateCommitter};
 use creusot_std::{
     ghost::{
         invariant::{AtomicInvariantSC, Protocol, Tokens, declare_namespace},
@@ -7,7 +6,10 @@ use creusot_std::{
     },
     logic::{Id, ra::excl::Excl},
     prelude::*,
-    std::thread::{self, JoinHandleExt},
+    std::{
+        sync::{atomic::Ordering, atomic_sc::AtomicI32, committer::Committer},
+        thread::{self, JoinHandleExt},
+    },
 };
 
 declare_namespace! { PARALLEL_ADD }
@@ -58,7 +60,7 @@ pub fn parallel_add() -> i32 {
     );
 
     thread::scope(|s| {
-        // We use move closure to make sure that they do not contain borrows of `Ghost<_>`, since
+        // We use move closures to make sure that they do not contain borrows of `Ghost<_>`, since
         // such a borrow would unnecesary consume space in these closures. So, we create the borrows
         // here.
         let mut frag1: Ghost<&mut _> = frag1.borrow_mut();
@@ -69,10 +71,10 @@ pub fn parallel_add() -> i32 {
         let t1 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut UpdateCommitter<AtomicI32>| {
+                ghost! { |c: &mut Committer<_, _, _, Ordering::SeqCst>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth1.update(*frag1, snapshot!((Some(Excl(true)), Some(Excl(true)))));
-                        c.shoot(&mut inv.own);
+                        c.shoot_store(&mut inv.own);
                     })
                 }},
             );
@@ -81,10 +83,10 @@ pub fn parallel_add() -> i32 {
         let t2 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut UpdateCommitter<AtomicI32>| {
+                ghost! { |c: &mut Committer<_, _, _, Ordering::SeqCst>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth2.update(*frag2, snapshot!((Some(Excl(true)), Some(Excl(true)))));
-                        c.shoot(&mut inv.own);
+                        c.shoot_store(&mut inv.own);
                     })
                 }},
             );
