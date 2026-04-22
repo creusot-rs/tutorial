@@ -50,4 +50,4 @@ jobs:
           echo -e '[patch.crates-io]\ncreusot-std = { path = "../creusot/creusot-std" }' > .cargo/config.toml
 
       - name: Run Creusot
-        run: cargo creusot prove -- -Fsolutions
+        run: cargo creusot -- -Fsolutions
