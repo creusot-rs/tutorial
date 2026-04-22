@@ -1,7 +1,7 @@
 //! A couple of short exercises.
 //!
 //! Objective: remove all `#[trusted]` with an "Exercise: ..." comment
-//! and make `cargo creusot prove` happy!
+//! and make `cargo creusot` happy!
 //!
 //! Some exercises make use of the `creusot_std` API, which you can
 //! browse here: https://doc.creusot.rs/creusot_std/
