@@ -14,6 +14,7 @@
             "overrideCommand": [
                 "cargo",
                 "creusot",
+                "--only=coma",
                 "--",
                 "--message-format=json"
             ]
