@@ -24,9 +24,13 @@ impl Protocol for ParallelAddAtomicInv {
     type Public = (AtomicI32, Id, Id);
 
     #[logic(inline)]
-    fn protocol(self, data: (AtomicI32, Id, Id)) -> bool {
+    fn public(self) -> Self::Public {
+       (*self.own.ward(), self.auth1.id(), self.auth2.id())
+    }
+
+    #[logic(inline)]
+    fn protocol(self) -> bool {
         pearlite! {
-            data == (*self.own.ward(), self.auth1.id(), self.auth2.id()) &&
             self.own.val()@ ==
                 if self.auth1@ == Some(Excl(true)) { 2 } else { 0 } +
                 if self.auth2@ == Some(Excl(true)) { 2 } else { 0 }
@@ -55,7 +59,6 @@ pub fn parallel_add() -> i32 {
             auth1: auth1.into_inner(),
             auth2: auth2.into_inner()
         }),
-        snapshot!((atomic, frag1.id(), frag2.id())),
         snapshot!(PARALLEL_ADD()),
     );
 
