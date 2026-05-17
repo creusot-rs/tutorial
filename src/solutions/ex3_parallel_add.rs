@@ -15,7 +15,7 @@ use creusot_std::{
 declare_namespace! { PARALLEL_ADD }
 
 struct ParallelAddAtomicInv {
-    own: Box<Perm<AtomicI32>>,
+    own: Perm<AtomicI32>,
     auth1: Authority<Option<Excl<bool>>>,
     auth2: Authority<Option<Excl<bool>>>,
 }
@@ -25,7 +25,7 @@ impl Protocol for ParallelAddAtomicInv {
 
     #[logic(inline)]
     fn public(self) -> Self::Public {
-       (*self.own.ward(), self.auth1.id(), self.auth2.id())
+        (*self.own.ward(), self.auth1.id(), self.auth2.id())
     }
 
     #[logic(inline)]
