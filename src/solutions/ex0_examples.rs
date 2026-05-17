@@ -198,8 +198,8 @@ pub fn interior_mut() {
     unsafe {
         let (cell, mut perm) = PermCell::new(0);
         let (b1, b2) = (&cell, &cell);
-        b1.set(ghost! { &mut **perm }, 1);
-        let _result = b2.take(ghost! { &mut **perm });
+        b1.set(ghost! { &mut *perm }, 1);
+        let _result = b2.take(ghost! { &mut *perm });
         proof_assert! { _result == 1i32 };
     }
 }
