@@ -1,6 +1,6 @@
 {
     "name": "Creusot tutorial",
-    "image": "ghcr.io/creusot-rs/creusot:v0.11.0",
+    "image": "ghcr.io/creusot-rs/creusot:latest",
 
     "containerEnv": {
         "CREUSOT_DATA_HOME": "/"
