@@ -7,7 +7,10 @@ use creusot_std::{
     logic::{Id, ra::excl::Excl},
     prelude::*,
     std::{
-        sync::{atomic::Ordering, atomic_sc::AtomicI32, committer::Committer},
+        sync::{
+            atomic_sc::{AtomicI32, ordering::SeqCst},
+            committer::Committer,
+        },
         thread::{self, JoinHandleExt},
     },
 };
@@ -74,7 +77,7 @@ pub fn parallel_add() -> i32 {
         let t1 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut Committer<_, _, Ordering::SeqCst, Ordering::SeqCst>| {
+                ghost! { |c: &mut Committer<_, _, SeqCst, SeqCst>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth1.update(*frag1, snapshot!((Some(Excl(true)), Some(Excl(true)))));
                         c.shoot_load(&inv.own);
@@ -87,7 +90,7 @@ pub fn parallel_add() -> i32 {
         let t2 = s.spawn(move |tokens: Ghost<Tokens>| {
             atomic.fetch_add(
                 2,
-                ghost! { |c: &mut Committer<_, _, Ordering::SeqCst, Ordering::SeqCst>| {
+                ghost! { |c: &mut Committer<_, _, SeqCst, SeqCst>| {
                     inv.open(tokens.into_inner(), |inv: &mut ParallelAddAtomicInv| {
                         inv.auth2.update(*frag2, snapshot!((Some(Excl(true)), Some(Excl(true)))));
                         c.shoot_load(&inv.own);
