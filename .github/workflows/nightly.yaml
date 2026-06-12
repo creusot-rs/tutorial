@@ -1,5 +1,4 @@
 name: Nightly
-# Note: this job only checks out the dev branch! (see `ref: dev`)
 on:
   schedule:
     - cron: '0 2 * * *'
@@ -10,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: dev
 
       - uses: ocaml/setup-ocaml@v3
         with:
