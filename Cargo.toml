@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-creusot-std = { version = "0.12.0-dev", features = ["sc-drf"] }
+creusot-std = { version = "0.12.0", features = ["sc-drf"] }
 
 [features]
 solutions = []
