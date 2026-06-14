@@ -20,6 +20,8 @@ jobs:
         run: |
           cd ..
           git clone https://github.com/creusot-rs/creusot --single-branch --branch $CREUSOT_VERSION
+          mkdir -p ~/.cargo
+          echo -e '[patch.crates-io]\ncreusot-std.path = "'`pwd`'/creusot/creusot-std"' > ~/.cargo/config.toml
 
       - name: Build and test
         run: cargo test -Fsolutions
