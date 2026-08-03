@@ -47,4 +47,11 @@ fn test_2() {
     gnome_sort(&mut v);
     assert_eq!(v, [(1, 1), (2, 2), (3, 3), (4, 4)]);
 }
+
+#[test]
+fn test_3() {
+    let mut v = [Some(4), Some(2), None, Some(3)];
+    gnome_sort(&mut v);
+    assert_eq!(v, [None, Some(2), Some(3), Some(4)]);
+}
 */
