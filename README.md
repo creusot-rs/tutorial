@@ -32,21 +32,7 @@ on Github's servers, with a free quota of 120h monthly per user.
 
 1. [Follow these instructions to install Creusot.](https://guide.creusot.rs/installation.html)
 
-    - This tutorial currently works with Creusot 0.11.0, so make sure to check out and install that version for the smoothest experience.
-      There is also a `dev` branch of this tutorial that keeps track of the development branch of Creusot.
-
-        ```
-        # In the creusot repository, before running `./INSTALL`
-        git checkout v0.11.0
-        ```
-
-    - The dev version of Creusot should also mostly work, up to redirecting to your local version of `creusot-std`.
-
-        ```toml
-        # Create the file `.cargo/config.toml` with the following contents
-        [patch.crates-io]
-        creusot-std = { path = "/PATH/TO/YOUR/creusot/creusot-std" }
-        ```
+    Note: This tutorial currently works with the `master` branch of Creusot.
 
 2. (Optional) For VS Code users, you can install [Creusot IDE](https://github.com/creusot-rs/creusot-ide), a VS Code extension that provides syntax highlighting and buttons to run Creusot in the editor.
 
