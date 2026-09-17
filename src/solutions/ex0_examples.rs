@@ -206,7 +206,7 @@ pub fn interior_mut() {
 
 /// Write `x` to `ptr`, given a suitable permission `perm`.
 #[requires(ptr == *(*perm).ward())]
-#[ensures(x == *(^perm).val())]
+#[ensures(x == (^perm).val())]
 #[ensures((*perm).ward() == (^perm).ward())]
 pub unsafe fn write_ptr<T>(ptr: *const T, x: T, perm: Ghost<&mut Perm<*const T>>) {
     // SAFETY: Proved by Creusot
