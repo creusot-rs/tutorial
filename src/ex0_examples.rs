@@ -230,20 +230,20 @@ impl SumTo10 {
 }
 
 #[allow(unused)] // Remove this attribute (unneeded after completing the exercise below)
-use creusot_std::{cell::PermCell, ghost::perm::Perm};
+use creusot_std::{cell::PCell, ghost::perm::Perm};
 
 /// Minimal example of interior mutability
-#[trusted] // Exercise: replace `UnsafeCell` with `PermCell`
+#[trusted] // Exercise: replace `UnsafeCell` with `PCell`
 // Then use the associated permission to write and read the cell.
 // No contract for this function.
 pub fn interior_mut() {
     use std::cell::UnsafeCell;
     // SAFETY: To be proved by Creusot
     unsafe {
-        let cell = UnsafeCell::new(0); // `PermCell::new` will return a cell and a permission
+        let cell = UnsafeCell::new(0); // `PCell::new` will return a cell and a permission
         let (b1, b2) = (&cell, &cell); // Share the cell (this line won't change)
-        *&mut *b1.get() = 1; // Replace this with `PermCell::set` or `PermCell::borrow_mut` to write to it
-        let _result = *&*b2.get(); // Replace this with `PermCell::get` or `PermCell::borrow` to read from it
+        *&mut *b1.get() = 1; // Replace this with `PCell::set` or `PCell::borrow_mut` to write to it
+        let _result = *&*b2.get(); // Replace this with `PCell::get` or `PCell::borrow` to read from it
         proof_assert! { _result == 1i32 };
     }
 }

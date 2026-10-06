@@ -190,13 +190,13 @@ impl SumTo10 {
     }
 }
 
-use creusot_std::{cell::PermCell, ghost::perm::Perm};
+use creusot_std::{cell::PCell, ghost::perm::Perm};
 
 /// Minimal example of interior mutability
 pub fn interior_mut() {
     // SAFETY: Proved by Creusot
     unsafe {
-        let (cell, mut perm) = PermCell::new(0);
+        let (cell, mut perm) = PCell::new(0);
         let (b1, b2) = (&cell, &cell);
         b1.set(ghost! { &mut *perm }, 1);
         let _result = b2.take(ghost! { &mut *perm });
